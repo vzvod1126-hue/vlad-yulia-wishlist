@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Влад 🕷️ + Юля 🎀 — вишлист</title>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(160deg, #FFF5F8 0%, #FFE0EC 100%); color: #3a2836; min-height: 100vh; -webkit-font-smoothing: antialiased; }
+#root { min-height: 100vh; }
+.center { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+.login-form { background: white; padding: 32px 24px; border-radius: 24px; box-shadow: 0 20px 60px rgba(255,107,157,0.15); width: 100%; max-width: 400px; text-align: center; border: 2px solid #FFD6E4; }
+.login-form h1 { font-size: 26px; margin-bottom: 4px; }
+.subtitle { color: #8a6b7a; margin-bottom: 24px; font-size: 14px; }
+.login-form input { width: 100%; padding: 14px 16px; margin-bottom: 12px; border: 2px solid #FFD6E4; border-radius: 12px; font-size: 16px; background: #FFF9FB; outline: none; }
+.login-form input:focus { border-color: #FF6B9D; }
+.login-form button { width: 100%; padding: 14px; background: linear-gradient(135deg, #FF6B9D, #FF8FB8); color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 8px; }
+.login-form button:disabled { opacity: 0.6; }
+.error { color: #E62429; font-size: 14px; margin-bottom: 8px; }
+.app { max-width: 1100px; margin: 0 auto; padding: 16px; }
+header { display: flex; justify-content: space-between; align-items: center; padding: 12px 0 16px; border-bottom: 2px solid #FFD6E4; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
+header h1 { font-size: 20px; }
+.logout { padding: 8px 14px; background: white; border: 2px solid #FFD6E4; border-radius: 10px; cursor: pointer; font-size: 14px; }
+.add-btn { width: 100%; padding: 14px; background: linear-gradient(135deg, #E62429, #FF6B9D); color: white; border: none; border-radius: 14px; font-size: 16px; font-weight: 600; cursor: pointer; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(230,36,41,0.25); }
+.lists { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+@media (max-width: 700px) { .lists { grid-template-columns: 1fr; } }
+.column { background: rgba(255,255,255,0.6); border-radius: 20px; padding: 16px; border: 2px solid #FFD6E4; }
+.column h2 { font-size: 18px; margin-bottom: 12px; }
+.empty { color: #8a6b7a; font-size: 14px; text-align: center; padding: 20px 0; }
+.card { background: white; border-radius: 16px; padding: 14px; margin-bottom: 12px; border: 2px solid #FFD6E4; box-shadow: 0 4px 12px rgba(255,107,157,0.08); }
+.card img { width: 100%; border-radius: 10px; margin-bottom: 10px; }
+.card h3 { font-size: 16px; margin-bottom: 6px; }
+.card p { font-size: 14px; color: #6a4a5a; margin-bottom: 8px; }
+.card.purchased { opacity: 0.7; border-style: dashed; }
+.card.purchased h3 { text-decoration: line-through; }
+.meta { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.meta span { font-size: 12px; padding: 4px 10px; background: #FFF0F5; border-radius: 20px; color: #a44a6a; }
+.card a { color: #E62429; font-size: 13px; text-decoration: none; }
+.buy-btn { margin-top: 10px; width: 100%; padding: 10px; background: #FFF0F5; border: 2px solid #FF6B9D; color: #E62429; border-radius: 10px; font-size: 14px; cursor: pointer; font-weight: 600; }
+.modal-bg { position: fixed; inset: 0; background: rgba(58,40,54,0.5); display: flex; align-items: flex-end; justify-content: center; z-index: 100; }
+@media (min-width: 700px) { .modal-bg { align-items: center; padding: 20px; } }
+.modal { background: white; padding: 24px 20px; border-radius: 24px 24px 0 0; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; }
+@media (min-width: 700px) { .modal { border-radius: 24px; } }
+.modal h2 { margin-bottom: 16px; }
+.modal label { display: block; margin-bottom: 12px; font-size: 14px; font-weight: 600; color: #6a4a5a; }
+.modal input, .modal textarea, .modal select { width: 100%; padding: 10px 12px; margin-top: 6px; border: 2px solid #FFD6E4; border-radius: 10px; font-size: 15px; background: #FFF9FB; outline: none; font-family: inherit; }
+.modal textarea { min-height: 70px; resize: vertical; }
+.modal-actions { display: flex; gap: 10px; margin-top: 16px; }
+.modal-actions button { flex: 1; padding: 12px; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; border: none; }
+.modal-actions button[type="button"] { background: #F5E9EE; color: #6a4a5a; }
+.modal-actions button[type="submit"] { background: linear-gradient(135deg, #FF6B9D, #FF8FB8); color: white; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" data-presets="react">
+const { useState, useEffect } = React;
+const { createClient } = window.supabase;
+
+const SUPABASE_URL = 'https://ufxkmdyqggtzehdgrlrq.supabase.co/rest/v1/';
+const SUPABASE_ANON_KEY = 'const SUPABASE_ANON_KEY = 'sb_publishable_qztayszdGjUWfJ3vdJiNLA_7yLft1vo
+';
+const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const CATEGORIES = { under2000: '💰 до 2000', big: '💎 крупный', handmade: '🎨 handmade', experience: '✨ впечатление', other: '🎁 прочее' };
+const PRIORITIES = { must: '🔥 очень хочу', nice: '🙂 было бы славно', dream: '🌟 мечта' };
+
+function App() {
+  const [session, setSession] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [profile, setProfile] = useState(null);
+  const [partner, setPartner] = useState(null);
+  const [gifts, setGifts] = useState([]);
+  const [showForm, setShowForm] = useState(false);
+
+  useEffect(() => {
+    db.auth.getSession().then(({ data }) => { setSession(data.session); setLoading(false); });
+    const { data: sub } = db.auth.onAuthStateChange((_e, s) => setSession(s));
+    return () => sub.subscription.unsubscribe();
+  }, []);
+
+  useEffect(() => { if (session) loadData(); }, [session]);
+
+  async function loadData() {
+    const me = session.user.id;
+    const { data: profiles } = await db.from('profiles').select('*');
+    setProfile(profiles?.find(p => p.id === me) || null);
+    setPartner(profiles?.find(p => p.id !== me) || null);
+    const { data: g, error } = await db.rpc('get_gifts');
+    if (error) { console.error(error); return; }
+    setGifts(g || []);
+  }
+
+  async function togglePurchase(giftId) {
+    const { error } = await db.rpc('toggle_purchase', { gift_id: giftId });
+    if (error) { alert('Ошибка: ' + error.message); return; }
+    await loadData();
+  }
+
+  async function deleteGift(giftId) {
+    if (!confirm('Удалить подарок?')) return;
+    const { error } = await db.from('gifts').delete().eq('id', giftId);
+    if (error) { alert(error.message); return; }
+    await loadData();
+  }
+
+  if (loading) return <div className="center">Загрузка 💗</div>;
+  if (!session) return <Login />;
+
+  const myWishlist = gifts.filter(g => g.for_user === session.user.id);
+  const partnerWishlist = gifts.filter(g => g.for_user !== session.user.id);
+
+  return (
+    <div className="app">
+      <header>
+        <h1>{profile?.emoji || '💗'} {profile?.name || 'Я'} + {partner?.emoji || '💗'} {partner?.name || 'Партнёр'}</h1>
+        <button className="logout" onClick={() => db.auth.signOut()}>Выйти</button>
+      </header>
+      <button className="add-btn" onClick={() => setShowForm(true)}>➕ Добавить подарок</button>
+      {showForm && <GiftForm me={session.user.id} partner={partner} onClose={() => setShowForm(false)} onSaved={() => { setShowForm(false); loadData(); }} />}
+      <section className="lists">
+        <div className="column">
+          <h2>🎁 Мой вишлист</h2>
+          {myWishlist.length === 0 && <p className="empty">Пока пусто. Добавь мечту! 💭</p>}
+          {myWishlist.map(g => <GiftCard key={g.id} gift={g} mode="mine" onDelete={() => deleteGift(g.id)} />)}
+        </div>
+        <div className="column">
+          <h2>💝 Хочу подарить {partner?.emoji} {partner?.name}</h2>
+          {partnerWishlist.length === 0 && <p className="empty">Пока пусто 🎀</p>}
+          {partnerWishlist.map(g => <GiftCard key={g.id} gift={g} mode="partner" onToggle={() => togglePurchase(g.id)} onDelete={() => deleteGift(g.id)} />)}
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function Login() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [busy, setBusy] = useState(false);
+  async function handleLogin(e) {
+    e.preventDefault(); setBusy(true); setError('');
+    const { error } = await db.auth.signInWithPassword({ email, password });
+    if (error) setError(error.message);
+    setBusy(false);
+  }
+  return (
+    <div className="center">
+      <form className="login-form" onSubmit={handleLogin}>
+        <h1>🕷️ Влад + Юля 🎀</h1>
+        <p className="subtitle">Наш семейный вишлист</p>
+        <input type="email" placeholder="email" value={email} onChange={e => setEmail(e.target.value)} required autoComplete="email" />
+        <input type="password" placeholder="пароль" value={password} onChange={e => setPassword(e.target.value)} required autoComplete="current-password" />
+        {error && <p className="error">{error}</p>}
+        <button type="submit" disabled={busy}>{busy ? '...' : 'Войти 💗'}</button>
+      </form>
+    </div>
+  );
+}
+
+function GiftCard({ gift, mode, onToggle, onDelete }) {
+  return (
+    <div className={`card ${gift.is_purchased ? 'purchased' : ''}`}>
+      {gift.image_url && <img src={gift.image_url} alt={gift.title} />}
+      <h3>{gift.title}</h3>
+      {gift.description && <p>{gift.description}</p>}
+      <div className="meta">
+        {gift.price != null && <span>{gift.price} ₽</span>}
+        {gift.category && <span>{CATEGORIES[gift.category]}</span>}
+        {gift.priority && <span>{PRIORITIES[gift.priority]}</span>}
+      </div>
+      {gift.url && <a href={gift.url} target="_blank" rel="noopener noreferrer">Открыть ссылку →</a>}
+      {mode === 'partner' && onToggle && (
+        <button className="buy-btn" onClick={onToggle}>
+          {gift.is_purchased ? '✅ Куплено (отменить?)' : '🛒 Отметить купленным'}
+        </button>
+      )}
+      {onDelete && (
+        <button onClick={onDelete} style={{marginTop: 8, background: 'none', border: 'none', color: '#c97', fontSize: 12, cursor: 'pointer', width: '100%', textAlign: 'right'}}>удалить</button>
+      )}
+    </div>
+  );
+}
+
+function GiftForm({ me, partner, onClose, onSaved }) {
+  const [form, setForm] = useState({ title: '', description: '', url: '', price: '', category: '', priority: '', for_user: me });
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState('');
+  async function handleSubmit(e) {
+    e.preventDefault(); setBusy(true); setErr('');
+    const payload = {
+      title: form.title,
+      description: form.description || null,
+      url: form.url || null,
+      price: form.price ? Number(form.price) : null,
+      category: form.category || null,
+      priority: form.priority || null,
+      for_user: form.for_user,
+      created_by: me
+    };
+    const { error } = await db.from('gifts').insert(payload);
+    setBusy(false);
+    if (error) { setErr(error.message); return; }
+    onSaved();
+  }
+  return (
+    <div className="modal-bg" onClick={onClose}>
+      <form className="modal" onClick={e => e.stopPropagation()} onSubmit={handleSubmit}>
+        <h2>Новый подарок</h2>
+        <label>Кому?
+          <select value={form.for_user} onChange={e => setForm({...form, for_user: e.target.value})}>
+            <option value={me}>Мне (в мой вишлист)</option>
+            {partner && <option value={partner.id}>{partner.emoji} {partner.name}</option>}
+          </select>
+        </label>
+        <label>Название*<input required value={form.title} onChange={e => setForm({...form, title: e.target.value})} /></label>
+        <label>Описание<textarea value={form.description} onChange={e => setForm({...form, description: e.target.value})} /></label>
+        <label>Ссылка<input type="url" value={form.url} onChange={e => setForm({...form, url: e.target.value})} placeholder="https://..." /></label>
+        <label>Цена, ₽<input type="number" value={form.price} onChange={e => setForm({...form, price: e.target.value})} /></label>
+        <label>Категория
+          <select value={form.category} onChange={e => setForm({...form, category: e.target.value})}>
+            <option value="">—</option>
+            {Object.entries(CATEGORIES).map(([k,v]) => <option key={k} value={k}>{v}</option>)}
+          </select>
+        </label>
+        <label>Приоритет
+          <select value={form.priority} onChange={e => setForm({...form, priority: e.target.value})}>
+            <option value="">—</option>
+            {Object.entries(PRIORITIES).map(([k,v]) => <option key={k} value={k}>{v}</option>)}
+          </select>
+        </label>
+        {err && <p className="error">{err}</p>}
+        <div className="modal-actions">
+          <button type="button" onClick={onClose}>Отмена</button>
+          <button type="submit" disabled={busy}>{busy ? '...' : 'Сохранить 💗'}</button>
+        </div>
+      </form>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+  </html>
