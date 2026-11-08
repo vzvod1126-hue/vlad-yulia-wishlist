@@ -22,7 +22,6 @@ html, body {
 
 #root { min-height: 100vh; }
 
-/* Экран загрузки */
 .loading-screen {
   position: fixed; inset: 0; background: linear-gradient(135deg, #FFF5F8, #FFD6E4);
   display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -33,7 +32,6 @@ html, body {
 .loading-bar-fill { height: 100%; background: linear-gradient(90deg, #FF6B9D, #E62429); width: 0%; transition: width 0.1s; border-radius: 20px; }
 .love-text { font-size: 20px; font-weight: bold; color: #E62429; animation: pulse 1.5s infinite; }
 
-/* Авторизация */
 .center { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
 .login-form { background: rgba(255, 255, 255, 0.95); padding: 32px 24px; border-radius: 24px; box-shadow: 0 20px 60px rgba(255,107,157,0.15); width: 100%; max-width: 400px; text-align: center; border: 2px solid #FFD6E4; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 .login-form h1 { font-size: 26px; margin-bottom: 4px; }
@@ -44,7 +42,6 @@ html, body {
 .login-form button:active { transform: scale(0.95); }
 .error { color: #E62429; font-size: 14px; margin-bottom: 8px; }
 
-/* Основной интерфейс */
 .app { max-width: 1100px; margin: 0 auto; padding: 16px; }
 header { display: flex; justify-content: space-between; align-items: center; padding: 12px 0 16px; border-bottom: 2px solid #FFD6E4; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
 header h1 { font-size: 20px; display: flex; align-items: center; gap: 8px; }
@@ -63,7 +60,6 @@ header h1 { font-size: 20px; display: flex; align-items: center; gap: 8px; }
 .column h2 { font-size: 18px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
 .empty { color: #8a6b7a; font-size: 14px; text-align: center; padding: 20px 0; }
 
-/* Карточки */
 .card { background: white; border-radius: 16px; padding: 14px; margin-bottom: 12px; border: 2px solid #FFD6E4; box-shadow: 0 4px 12px rgba(255,107,157,0.08); animation: slideInUp 0.4s ease-out forwards; opacity: 0; transition: transform 0.2s; }
 .card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(255,107,157,0.2); }
 .card img { width: 100%; border-radius: 10px; margin-bottom: 10px; }
@@ -72,7 +68,6 @@ header h1 { font-size: 20px; display: flex; align-items: center; gap: 8px; }
 .card.purchased { opacity: 0.6; border-style: dashed; background: #FFF9FB; }
 .card.purchased h3 { text-decoration: line-through; }
 
-/* Бейджи */
 .meta { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
 .badge { font-size: 12px; padding: 4px 10px; border-radius: 20px; font-weight: 600; color: white; display: inline-block; }
 .badge.price { background: #8A6B7A; }
@@ -94,7 +89,6 @@ header h1 { font-size: 20px; display: flex; align-items: center; gap: 8px; }
 .delete-btn { margin-top: 8px; background: #FFF0F5; border: 1px solid #E62429; color: #E62429; font-size: 12px; cursor: pointer; width: 100%; padding: 8px; border-radius: 8px; transition: 0.2s; }
 .delete-btn:active { background: #E62429; color: white; }
 
-/* Модальное окно */
 .modal-bg { position: fixed; inset: 0; background: rgba(58,40,54,0.6); display: flex; align-items: flex-end; justify-content: center; z-index: 100; animation: fadeIn 0.3s ease-out; backdrop-filter: blur(3px); }
 @media (min-width: 700px) { .modal-bg { align-items: center; padding: 20px; } }
 .modal { background: white; padding: 24px 20px; border-radius: 24px 24px 0 0; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; animation: slideUpMobile 0.3s ease-out; }
@@ -108,7 +102,6 @@ header h1 { font-size: 20px; display: flex; align-items: center; gap: 8px; }
 .modal-actions button[type="submit"] { background: linear-gradient(135deg, #FF6B9D, #FF8FB8); color: white; }
 .modal-actions button:active { transform: scale(0.95); }
 
-/* Анимации */
 @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
 @keyframes popIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
@@ -187,13 +180,12 @@ function App() {
   }
 
   async function deleteGift(giftId) {
-    const { error } = await db.from('gifts').delete().eq('id', giftId);
+    const { error } = await db.rpc('delete_gift', { gift_id: giftId });
     if (error) { alert('Ошибка удаления: ' + error.message); return; }
     await loadData();
   }
 
   if (appLoading || dataLoading) return React.createElement(LoadingScreen);
-
   if (!session) return React.createElement(Login);
 
   const myWishlist = gifts.filter(g => g.for_user === session.user.id);
