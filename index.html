@@ -56,15 +56,30 @@ html, body {
   box-shadow: 0 2px 5px rgba(0,0,0,0.05);
   border: 1px solid rgba(0,0,0,0.05);
 }
-/* Размещение по краям (чтобы не мешать центру) */
+/* Размещение по краям (для планшетов и ПК) */
 .pol-1 { top: 10%; left: 1%; transform: rotate(-6deg); }
 .pol-2 { top: 8%; right: 1%; transform: rotate(5deg); width: 230px; }
 .pol-3 { bottom: 5%; left: 2%; transform: rotate(7deg); width: 220px; }
 .pol-4 { bottom: 10%; right: 2%; transform: rotate(-5deg); width: 210px; }
 
-/* Скрываем полароиды на телефонах */
+/* МОБИЛЬНАЯ ВЕРСИЯ: Делаем их видимыми, но аккуратно по краям */
 @media (max-width: 1000px) {
-  .polaroid-board { display: none; }
+  .polaroid {
+    width: 130px; /* Уменьшаем размер */
+    padding: 6px 6px 20px 6px;
+    opacity: 0.8; /* Чуть прозрачные */
+  }
+  .polaroid::before { width: 50px; height: 15px; top: -8px; }
+  
+  /* Сдвигаем за край экрана, чтобы занимали меньше места */
+  .pol-1 { top: 5%; left: -40px; transform: rotate(-15deg); }
+  .pol-2 { top: 15%; right: -40px; transform: rotate(15deg); }
+  .pol-3 { bottom: 15%; left: -40px; transform: rotate(10deg); }
+  .pol-4 { bottom: 5%; right: -40px; transform: rotate(-10deg); }
+
+  /* Делаем колонки более плотными, чтобы текст читался поверх фото */
+  .column { background: rgba(255, 255, 255, 0.96); }
+  header { background: rgba(255, 255, 255, 0.96); }
 }
 
 .loading-screen {
@@ -79,7 +94,7 @@ html, body {
 
 .center { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; position: relative; z-index: 10; }
 .login-form { background: rgba(255, 255, 255, 0.95); padding: 32px 24px; border-radius: 24px; box-shadow: 0 20px 60px rgba(255,107,157,0.15); width: 100%; max-width: 400px; text-align: center; border: 2px solid #FFD6E4; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); backdrop-filter: blur(10px); }
-.login-form h1 { font-size: 26px; margin-bottom: 4px; }
+.login-form h1 { font-size: 24px; margin-bottom: 4px; }
 .subtitle { color: #8a6b7a; margin-bottom: 24px; font-size: 14px; }
 .login-form input { width: 100%; padding: 14px 16px; margin-bottom: 12px; border: 2px solid #FFD6E4; border-radius: 12px; font-size: 16px; background: #FFF9FB; outline: none; transition: 0.3s; }
 .login-form input:focus { border-color: #FF6B9D; box-shadow: 0 0 10px rgba(255,107,157,0.3); }
@@ -88,8 +103,8 @@ html, body {
 .error { color: #E62429; font-size: 14px; margin-bottom: 8px; }
 
 .app { max-width: 900px; margin: 0 auto; padding: 16px; position: relative; z-index: 10; }
-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; border-radius: 20px; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border: 2px solid #FFD6E4; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; box-shadow: 0 10px 30px rgba(255,107,157,0.1); }
-header h1 { font-size: 20px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+header { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; border-radius: 20px; backdrop-filter: blur(10px); border: 2px solid #FFD6E4; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; box-shadow: 0 10px 30px rgba(255,107,157,0.1); }
+header h1 { font-size: 18px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .avatar { width: 44px; height: 44px; border-radius: 50%; background: white; border: 3px solid #FF6B9D; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 0 15px rgba(255,107,157,0.4); overflow: hidden; }
 .avatar img { width: 100%; height: 100%; object-fit: cover; }
 
@@ -103,7 +118,7 @@ header h1 { font-size: 20px; display: flex; align-items: center; gap: 8px; flex-
 
 .lists { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 @media (max-width: 700px) { .lists { grid-template-columns: 1fr; } }
-.column { background: rgba(255,255,255,0.95); border-radius: 20px; padding: 16px; border: 2px solid #FFD6E4; backdrop-filter: blur(8px); box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
+.column { border-radius: 20px; padding: 16px; border: 2px solid #FFD6E4; backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
 .column h2 { font-size: 18px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; color: #E62429; }
 .empty { color: #8a6b7a; font-size: 14px; text-align: center; padding: 20px 0; }
 
