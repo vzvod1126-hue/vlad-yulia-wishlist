@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Владик 🕷️ + Юлька 🎀 — вишлист</title>
+<title>Владик 🕷️ + Юлька Шпулька 🎀 — вишлист</title>
 <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -26,18 +26,17 @@ html, body {
 .polaroid-board {
   position: fixed;
   inset: 0;
-  pointer-events: none; /* Клики проходят сквозь картинки */
-  z-index: 1; /* Позади интерфейса, но поверх фона */
+  pointer-events: none; 
+  z-index: 1; 
   overflow: hidden;
 }
 .polaroid {
   position: absolute;
   background: white;
-  padding: 12px 12px 40px 12px;
+  padding: 10px 10px 35px 10px;
   box-shadow: 0 15px 35px rgba(0,0,0,0.15);
   border-radius: 4px;
-  width: 240px;
-  transition: transform 0.3s;
+  width: 210px;
 }
 .polaroid img { 
   width: 100%; 
@@ -45,25 +44,26 @@ html, body {
   display: block; 
   border-radius: 2px; 
   object-fit: cover;
+  animation: fadeImg 1s ease-in-out;
 }
 .polaroid::before {
   content: '';
   position: absolute;
   top: -12px; left: 50%;
   transform: translateX(-50%) rotate(-2deg);
-  width: 90px; height: 25px;
+  width: 80px; height: 22px;
   background: rgba(255, 255, 255, 0.6);
   box-shadow: 0 2px 5px rgba(0,0,0,0.05);
   border: 1px solid rgba(0,0,0,0.05);
 }
-/* Размещение по углам с большим отступом */
-.pol-1 { top: 8%; left: 3%; transform: rotate(-6deg); }
-.pol-2 { top: 12%; right: 3%; transform: rotate(5deg); width: 260px; }
-.pol-3 { bottom: 8%; left: 5%; transform: rotate(7deg); width: 250px; }
-.pol-4 { bottom: 10%; right: 4%; transform: rotate(-5deg); }
+/* Размещение по краям (чтобы не мешать центру) */
+.pol-1 { top: 10%; left: 1%; transform: rotate(-6deg); }
+.pol-2 { top: 8%; right: 1%; transform: rotate(5deg); width: 230px; }
+.pol-3 { bottom: 5%; left: 2%; transform: rotate(7deg); width: 220px; }
+.pol-4 { bottom: 10%; right: 2%; transform: rotate(-5deg); width: 210px; }
 
-/* Скрываем полароиды на телефонах и узких экранах, чтобы не мешали */
-@media (max-width: 1100px) {
+/* Скрываем полароиды на телефонах */
+@media (max-width: 1000px) {
   .polaroid-board { display: none; }
 }
 
@@ -77,7 +77,7 @@ html, body {
 .loading-bar-fill { height: 100%; background: linear-gradient(90deg, #FF6B9D, #E62429); width: 0%; transition: width 0.1s; border-radius: 20px; }
 .love-text { font-size: 20px; font-weight: bold; color: #E62429; animation: pulse 1.5s infinite; }
 
-.center { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; position: relative; z-index: 2; }
+.center { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; position: relative; z-index: 10; }
 .login-form { background: rgba(255, 255, 255, 0.95); padding: 32px 24px; border-radius: 24px; box-shadow: 0 20px 60px rgba(255,107,157,0.15); width: 100%; max-width: 400px; text-align: center; border: 2px solid #FFD6E4; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); backdrop-filter: blur(10px); }
 .login-form h1 { font-size: 26px; margin-bottom: 4px; }
 .subtitle { color: #8a6b7a; margin-bottom: 24px; font-size: 14px; }
@@ -87,9 +87,9 @@ html, body {
 .login-form button:active { transform: scale(0.95); }
 .error { color: #E62429; font-size: 14px; margin-bottom: 8px; }
 
-.app { max-width: 1000px; margin: 0 auto; padding: 16px; position: relative; z-index: 2; }
-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; border-radius: 20px; background: rgba(255,255,255,0.85); backdrop-filter: blur(10px); border: 2px solid #FFD6E4; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; box-shadow: 0 10px 30px rgba(255,107,157,0.1); }
-header h1 { font-size: 20px; display: flex; align-items: center; gap: 8px; }
+.app { max-width: 900px; margin: 0 auto; padding: 16px; position: relative; z-index: 10; }
+header { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; border-radius: 20px; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border: 2px solid #FFD6E4; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; box-shadow: 0 10px 30px rgba(255,107,157,0.1); }
+header h1 { font-size: 20px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .avatar { width: 44px; height: 44px; border-radius: 50%; background: white; border: 3px solid #FF6B9D; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 0 15px rgba(255,107,157,0.4); overflow: hidden; }
 .avatar img { width: 100%; height: 100%; object-fit: cover; }
 
@@ -103,7 +103,7 @@ header h1 { font-size: 20px; display: flex; align-items: center; gap: 8px; }
 
 .lists { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 @media (max-width: 700px) { .lists { grid-template-columns: 1fr; } }
-.column { background: rgba(255,255,255,0.9); border-radius: 20px; padding: 16px; border: 2px solid #FFD6E4; backdrop-filter: blur(8px); box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
+.column { background: rgba(255,255,255,0.95); border-radius: 20px; padding: 16px; border: 2px solid #FFD6E4; backdrop-filter: blur(8px); box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
 .column h2 { font-size: 18px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; color: #E62429; }
 .empty { color: #8a6b7a; font-size: 14px; text-align: center; padding: 20px 0; }
 
@@ -159,6 +159,7 @@ header h1 { font-size: 20px; display: flex; align-items: center; gap: 8px; }
 @keyframes slideInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes slideUpMobile { from { transform: translateY(100%); } to { transform: translateY(0); } }
+@keyframes fadeImg { 0% { opacity: 0.3; } 100% { opacity: 1; } }
 </style>
 </head>
 <body>
@@ -188,17 +189,32 @@ function formatName(name) {
   if (!name) return '';
   const lower = name.toLowerCase();
   if (lower === 'влад') return 'Владик';
-  if (lower === 'юля') return 'Юлька';
+  if (lower === 'юля') return 'Юлька Шпулька';
   return name;
 }
 
+// Компонент, который меняет картинки местами
 function PolaroidBoard() {
+  const [offset, setOffset] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setOffset(prev => (prev + 1) % COLLAGES.length);
+    }, 5000); // Каждые 5 секунд
+    return () => clearInterval(interval);
+  }, []);
+
+  // Вычисляем, какая картинка в каком слоте
+  const img1 = COLLAGES[offset % 4];
+  const img2 = COLLAGES[(offset + 1) % 4];
+  const img3 = COLLAGES[(offset + 2) % 4];
+  const img4 = COLLAGES[(offset + 3) % 4];
+
   return React.createElement('div', { className: 'polaroid-board' },
-    COLLAGES.map((url, index) => 
-      React.createElement('div', { key: index, className: 'polaroid pol-' + (index + 1) },
-        React.createElement('img', { src: url, alt: 'collage' })
-      )
-    )
+    React.createElement('div', { className: 'polaroid pol-1' }, React.createElement('img', { src: img1, alt: 'collage', key: img1 })),
+    React.createElement('div', { className: 'polaroid pol-2' }, React.createElement('img', { src: img2, alt: 'collage', key: img2 })),
+    React.createElement('div', { className: 'polaroid pol-3' }, React.createElement('img', { src: img3, alt: 'collage', key: img3 })),
+    React.createElement('div', { className: 'polaroid pol-4' }, React.createElement('img', { src: img4, alt: 'collage', key: img4 }))
   );
 }
 
@@ -383,7 +399,7 @@ function Login() {
 
   return React.createElement('div', { className: 'center' },
     React.createElement('form', { className: 'login-form', onSubmit: handleLogin },
-      React.createElement('h1', null, '🕷️ Владик + Юлька 🎀'),
+      React.createElement('h1', null, '🕷️ Владик + Юлька Шпулька 🎀'),
       React.createElement('p', { className: 'subtitle' }, 'Наш семейный вишлист'),
       React.createElement('input', { type: 'email', placeholder: 'email', value: email, onChange: e => setEmail(e.target.value), required: true }),
       React.createElement('input', { type: 'password', placeholder: 'пароль', value: password, onChange: e => setPassword(e.target.value), required: true }),
