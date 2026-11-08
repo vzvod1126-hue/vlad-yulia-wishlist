@@ -86,8 +86,9 @@ header h1 { font-size: 20px; display: flex; align-items: center; gap: 8px; }
 .buy-btn { margin-top: 10px; width: 100%; padding: 10px; background: #FFF0F5; border: 2px solid #FF6B9D; color: #E62429; border-radius: 10px; font-size: 14px; cursor: pointer; font-weight: 600; transition: 0.2s; }
 .buy-btn:active { transform: scale(0.95); background: #FF6B9D; color: white; }
 
-.delete-btn { margin-top: 8px; background: #FFF0F5; border: 1px solid #E62429; color: #E62429; font-size: 12px; cursor: pointer; width: 100%; padding: 8px; border-radius: 8px; transition: 0.2s; }
-.delete-btn:active { background: #E62429; color: white; }
+/* ЯРКАЯ КНОПКА УДАЛЕНИЯ ДЛЯ ТЕСТА */
+.delete-btn { margin-top: 8px; background: #E62429; border: none; color: white; font-size: 13px; font-weight: bold; cursor: pointer; width: 100%; padding: 10px; border-radius: 8px; transition: 0.2s; box-shadow: 0 4px 10px rgba(230,36,41,0.3); }
+.delete-btn:active { transform: scale(0.95); background: #b01b1f; }
 
 .modal-bg { position: fixed; inset: 0; background: rgba(58,40,54,0.6); display: flex; align-items: flex-end; justify-content: center; z-index: 100; animation: fadeIn 0.3s ease-out; backdrop-filter: blur(3px); }
 @media (min-width: 700px) { .modal-bg { align-items: center; padding: 20px; } }
@@ -181,7 +182,10 @@ function App() {
 
   async function deleteGift(giftId) {
     const { error } = await db.rpc('delete_gift', { gift_id: giftId });
-    if (error) { alert('Ошибка удаления: ' + error.message); return; }
+    if (error) { 
+      alert('ОШИБКА БАЗЫ ДАННЫХ: ' + error.message); 
+      return; 
+    }
     await loadData();
   }
 
@@ -266,7 +270,7 @@ function GiftCard({ gift, mode, onToggle, onDelete }) {
     ),
     gift.url && React.createElement('a', { href: gift.url, target: '_blank', rel: 'noopener noreferrer' }, 'Открыть ссылку →'),
     mode === 'partner' && onToggle && React.createElement('button', { className: 'buy-btn', onClick: onToggle }, gift.is_purchased ? '✅ Куплено (отменить?)' : '🛒 Отметить купленным'),
-    onDelete && React.createElement('button', { className: 'delete-btn', onClick: onDelete }, '🗑 Удалить подарок')
+    onDelete && React.createElement('button', { className: 'delete-btn', onClick: onDelete }, '🗑 УДАЛИТЬ (ТЕСТ)')
   );
 }
 
