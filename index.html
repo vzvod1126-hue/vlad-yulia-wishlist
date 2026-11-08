@@ -10,7 +10,6 @@
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* Анимированный фон (переливается) */
 html, body { 
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
   background: linear-gradient(45deg, #FFF5F8, #FFE0EC, #FFD6E4, #FFF5F8);
@@ -18,22 +17,40 @@ html, body {
   animation: gradientBG 10s ease infinite;
   color: #3a2836; 
   min-height: 100vh; 
+  overflow-x: hidden;
 }
 
 #root { min-height: 100vh; }
+
+/* Экран загрузки */
+.loading-screen {
+  position: fixed; inset: 0; background: linear-gradient(135deg, #FFF5F8, #FFD6E4);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  z-index: 9999; padding: 20px; text-align: center;
+}
+.loading-screen h2 { font-size: 24px; margin-bottom: 20px; color: #E62429; }
+.loading-bar-bg { width: 80%; max-width: 300px; height: 20px; background: white; border-radius: 20px; border: 2px solid #FF6B9D; overflow: hidden; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(255,107,157,0.2); }
+.loading-bar-fill { height: 100%; background: linear-gradient(90deg, #FF6B9D, #E62429); width: 0%; transition: width 0.1s; border-radius: 20px; }
+.love-text { font-size: 20px; font-weight: bold; color: #E62429; animation: pulse 1.5s infinite; }
+
+/* Авторизация */
 .center { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
 .login-form { background: rgba(255, 255, 255, 0.95); padding: 32px 24px; border-radius: 24px; box-shadow: 0 20px 60px rgba(255,107,157,0.15); width: 100%; max-width: 400px; text-align: center; border: 2px solid #FFD6E4; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 .login-form h1 { font-size: 26px; margin-bottom: 4px; }
 .subtitle { color: #8a6b7a; margin-bottom: 24px; font-size: 14px; }
-.login-form input { width: 100%; padding: 14px 16px; margin-bottom: 12px; border: 2px solid #FFD6E4; border-radius: 12px; font-size: 16px; background: #FFF9FB; outline: none; }
-.login-form input:focus { border-color: #FF6B9D; }
+.login-form input { width: 100%; padding: 14px 16px; margin-bottom: 12px; border: 2px solid #FFD6E4; border-radius: 12px; font-size: 16px; background: #FFF9FB; outline: none; transition: 0.3s; }
+.login-form input:focus { border-color: #FF6B9D; box-shadow: 0 0 10px rgba(255,107,157,0.3); }
 .login-form button { width: 100%; padding: 14px; background: linear-gradient(135deg, #FF6B9D, #FF8FB8); color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 8px; transition: 0.2s; }
 .login-form button:active { transform: scale(0.95); }
 .error { color: #E62429; font-size: 14px; margin-bottom: 8px; }
 
+/* Основной интерфейс */
 .app { max-width: 1100px; margin: 0 auto; padding: 16px; }
 header { display: flex; justify-content: space-between; align-items: center; padding: 12px 0 16px; border-bottom: 2px solid #FFD6E4; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
-header h1 { font-size: 20px; animation: slideInLeft 0.5s ease-out; }
+header h1 { font-size: 20px; display: flex; align-items: center; gap: 8px; }
+.avatar { width: 40px; height: 40px; border-radius: 50%; background: white; border: 2px solid #FF6B9D; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 0 15px rgba(255,107,157,0.4); overflow: hidden; }
+.avatar img { width: 100%; height: 100%; object-fit: cover; }
+
 .logout { padding: 8px 14px; background: rgba(255, 255, 255, 0.9); border: 2px solid #FFD6E4; border-radius: 10px; cursor: pointer; font-size: 14px; transition: 0.2s; }
 .logout:active { transform: scale(0.9); }
 
@@ -42,40 +59,59 @@ header h1 { font-size: 20px; animation: slideInLeft 0.5s ease-out; }
 
 .lists { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 @media (max-width: 700px) { .lists { grid-template-columns: 1fr; } }
-.column { background: rgba(255,255,255,0.8); border-radius: 20px; padding: 16px; border: 2px solid #FFD6E4; backdrop-filter: blur(5px); }
-.column h2 { font-size: 18px; margin-bottom: 12px; }
+.column { background: rgba(255,255,255,0.85); border-radius: 20px; padding: 16px; border: 2px solid #FFD6E4; backdrop-filter: blur(5px); box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+.column h2 { font-size: 18px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
 .empty { color: #8a6b7a; font-size: 14px; text-align: center; padding: 20px 0; }
 
-.card { background: white; border-radius: 16px; padding: 14px; margin-bottom: 12px; border: 2px solid #FFD6E4; box-shadow: 0 4px 12px rgba(255,107,157,0.08); animation: slideInUp 0.4s ease-out forwards; opacity: 0; }
+/* Карточки */
+.card { background: white; border-radius: 16px; padding: 14px; margin-bottom: 12px; border: 2px solid #FFD6E4; box-shadow: 0 4px 12px rgba(255,107,157,0.08); animation: slideInUp 0.4s ease-out forwards; opacity: 0; transition: transform 0.2s; }
+.card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(255,107,157,0.2); }
 .card img { width: 100%; border-radius: 10px; margin-bottom: 10px; }
 .card h3 { font-size: 16px; margin-bottom: 6px; }
 .card p { font-size: 14px; color: #6a4a5a; margin-bottom: 8px; }
 .card.purchased { opacity: 0.6; border-style: dashed; background: #FFF9FB; }
 .card.purchased h3 { text-decoration: line-through; }
+
+/* Бейджи */
 .meta { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
-.meta span { font-size: 12px; padding: 4px 10px; background: #FFF0F5; border-radius: 20px; color: #a44a6a; }
-.card a { color: #E62429; font-size: 13px; text-decoration: none; }
+.badge { font-size: 12px; padding: 4px 10px; border-radius: 20px; font-weight: 600; color: white; display: inline-block; }
+.badge.price { background: #8A6B7A; }
+.badge.cat-under2000 { background: #FF9F1C; }
+.badge.cat-big { background: #E62429; }
+.badge.cat-handmade { background: #2EC4B6; }
+.badge.cat-experience { background: #9B5DE5; }
+.badge.cat-other { background: #6C757D; }
+.badge.prio-must { background: #FF006E; box-shadow: 0 0 10px rgba(255,0,110,0.5); }
+.badge.prio-nice { background: #3A86FF; }
+.badge.prio-dream { background: #FFBE0B; color: #3a2836; }
+
+.card a { color: #E62429; font-size: 13px; text-decoration: none; font-weight: bold; }
+.card a:hover { text-decoration: underline; }
 
 .buy-btn { margin-top: 10px; width: 100%; padding: 10px; background: #FFF0F5; border: 2px solid #FF6B9D; color: #E62429; border-radius: 10px; font-size: 14px; cursor: pointer; font-weight: 600; transition: 0.2s; }
 .buy-btn:active { transform: scale(0.95); background: #FF6B9D; color: white; }
 
-.modal-bg { position: fixed; inset: 0; background: rgba(58,40,54,0.5); display: flex; align-items: flex-end; justify-content: center; z-index: 100; animation: fadeIn 0.3s ease-out; }
+.delete-btn { margin-top: 8px; background: #FFF0F5; border: 1px solid #E62429; color: #E62429; font-size: 12px; cursor: pointer; width: 100%; padding: 8px; border-radius: 8px; transition: 0.2s; }
+.delete-btn:active { background: #E62429; color: white; }
+
+/* Модальное окно */
+.modal-bg { position: fixed; inset: 0; background: rgba(58,40,54,0.6); display: flex; align-items: flex-end; justify-content: center; z-index: 100; animation: fadeIn 0.3s ease-out; backdrop-filter: blur(3px); }
 @media (min-width: 700px) { .modal-bg { align-items: center; padding: 20px; } }
 .modal { background: white; padding: 24px 20px; border-radius: 24px 24px 0 0; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; animation: slideUpMobile 0.3s ease-out; }
 @media (min-width: 700px) { .modal { border-radius: 24px; animation: popIn 0.3s ease-out; } }
-.modal h2 { margin-bottom: 16px; }
+.modal h2 { margin-bottom: 16px; color: #E62429; }
 .modal label { display: block; margin-bottom: 12px; font-size: 14px; font-weight: 600; color: #6a4a5a; }
 .modal input, .modal textarea, .modal select { width: 100%; padding: 10px 12px; margin-top: 6px; border: 2px solid #FFD6E4; border-radius: 10px; font-size: 15px; background: #FFF9FB; outline: none; }
 .modal-actions { display: flex; gap: 10px; margin-top: 16px; }
-.modal-actions button { flex: 1; padding: 12px; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; border: none; }
+.modal-actions button { flex: 1; padding: 12px; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; border: none; transition: 0.2s; }
 .modal-actions button[type="button"] { background: #F5E9EE; color: #6a4a5a; }
 .modal-actions button[type="submit"] { background: linear-gradient(135deg, #FF6B9D, #FF8FB8); color: white; }
+.modal-actions button:active { transform: scale(0.95); }
 
-/* --- АНИМАЦИИ --- */
+/* Анимации */
 @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-@keyframes pulse { 0% { transform: scale(1); box-shadow: 0 4px 20px rgba(230,36,41,0.25); } 50% { transform: scale(1.02); box-shadow: 0 4px 30px rgba(230,36,41,0.5); } 100% { transform: scale(1); box-shadow: 0 4px 20px rgba(230,36,41,0.25); } }
+@keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
 @keyframes popIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
-@keyframes slideInLeft { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
 @keyframes slideInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes slideUpMobile { from { transform: translateY(100%); } to { transform: translateY(0); } }
@@ -94,30 +130,54 @@ const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const CATEGORIES = { under2000: '💰 до 2000', big: '💎 крупный', handmade: '🎨 handmade', experience: '✨ впечатление', other: '🎁 прочее' };
 const PRIORITIES = { must: '🔥 очень хочу', nice: '🙂 было бы славно', dream: '🌟 мечта' };
 
+function LoadingScreen() {
+  const [percent, setPercent] = useState(0);
+  
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPercent(p => {
+        if (p >= 100) { clearInterval(interval); return 100; }
+        return p + 5;
+      });
+    }, 50);
+    return () => clearInterval(interval);
+  }, []);
+
+  return React.createElement('div', { className: 'loading-screen' },
+    React.createElement('h2', null, 'Загрузка ' + percent + '%...'),
+    React.createElement('div', { className: 'loading-bar-bg' },
+      React.createElement('div', { className: 'loading-bar-fill', style: { width: percent + '%' } })
+    ),
+    React.createElement('div', { className: 'love-text' }, 'Моя любовь к тебе всегда 100% ❤️')
+  );
+}
+
 function App() {
   const [session, setSession] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [appLoading, setAppLoading] = useState(true);
+  const [dataLoading, setDataLoading] = useState(true);
   const [profile, setProfile] = useState(null);
   const [partner, setPartner] = useState(null);
   const [gifts, setGifts] = useState([]);
   const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
-    db.auth.getSession().then(({ data }) => { setSession(data.session); setLoading(false); });
+    db.auth.getSession().then(({ data }) => { setSession(data.session); setAppLoading(false); });
     const { data: sub } = db.auth.onAuthStateChange((_e, s) => setSession(s));
     return () => sub.subscription.unsubscribe();
   }, []);
 
-  useEffect(() => { if (session) loadData(); }, [session]);
+  useEffect(() => { if (session) loadData(); else setDataLoading(false); }, [session]);
 
   async function loadData() {
+    setDataLoading(true);
     const me = session.user.id;
     const { data: profiles } = await db.from('profiles').select('*');
     setProfile(profiles?.find(p => p.id === me) || null);
     setPartner(profiles?.find(p => p.id !== me) || null);
     const { data: g, error } = await db.rpc('get_gifts');
-    if (error) { console.error(error); return; }
-    setGifts(g || []);
+    if (!error) setGifts(g || []);
+    setDataLoading(false);
   }
 
   async function togglePurchase(giftId) {
@@ -128,14 +188,12 @@ function App() {
 
   async function deleteGift(giftId) {
     const { error } = await db.from('gifts').delete().eq('id', giftId);
-    if (error) { 
-      alert('Ошибка удаления (база данных запретила): ' + error.message); 
-      return; 
-    }
+    if (error) { alert('Ошибка удаления: ' + error.message); return; }
     await loadData();
   }
 
-  if (loading) return React.createElement('div', { className: 'center' }, 'Загрузка 💗');
+  if (appLoading || dataLoading) return React.createElement(LoadingScreen);
+
   if (!session) return React.createElement(Login);
 
   const myWishlist = gifts.filter(g => g.for_user === session.user.id);
@@ -143,7 +201,13 @@ function App() {
 
   return React.createElement('div', { className: 'app' },
     React.createElement('header', null,
-      React.createElement('h1', null, (profile?.emoji || '💗') + ' ' + (profile?.name || 'Я') + ' + ' + (partner?.emoji || '💗') + ' ' + (partner?.name || 'Партнёр')),
+      React.createElement('h1', null, 
+        React.createElement('div', { className: 'avatar' }, profile?.emoji || '💗'),
+        React.createElement('span', null, profile?.name || 'Я'),
+        React.createElement('span', null, '+'),
+        React.createElement('div', { className: 'avatar' }, partner?.emoji || '💗'),
+        React.createElement('span', null, partner?.name || 'Партнёр')
+      ),
       React.createElement('button', { className: 'logout', onClick: () => db.auth.signOut() }, 'Выйти')
     ),
     React.createElement('button', { className: 'add-btn', onClick: () => setShowForm(true) }, '➕ Добавить подарок'),
@@ -153,19 +217,15 @@ function App() {
         React.createElement('h2', null, '🎁 Мой вишлист'),
         myWishlist.length === 0 && React.createElement('p', { className: 'empty' }, 'Пока пусто. Добавь мечту! 💭'),
         myWishlist.map(g => React.createElement(GiftCard, { 
-          key: g.id, 
-          gift: g, 
-          mode: 'mine', 
+          key: g.id, gift: g, mode: 'mine', 
           onDelete: (g.created_by === session.user.id) ? () => deleteGift(g.id) : null 
         }))
       ),
       React.createElement('div', { className: 'column' },
-        React.createElement('h2', null, '💝 Хочу подарить ' + (partner?.emoji || '') + ' ' + (partner?.name || '')),
+        React.createElement('h2', null, '💝 Хочу подарить ' + (partner?.name || '')),
         partnerWishlist.length === 0 && React.createElement('p', { className: 'empty' }, 'Пока пусто 🎀'),
         partnerWishlist.map(g => React.createElement(GiftCard, { 
-          key: g.id, 
-          gift: g, 
-          mode: 'partner', 
+          key: g.id, gift: g, mode: 'partner', 
           onToggle: () => togglePurchase(g.id), 
           onDelete: (g.created_by === session.user.id) ? () => deleteGift(g.id) : null 
         }))
@@ -200,18 +260,21 @@ function Login() {
 }
 
 function GiftCard({ gift, mode, onToggle, onDelete }) {
+  const getCatClass = (cat) => 'badge cat-' + (cat || 'other');
+  const getPrioClass = (prio) => 'badge prio-' + (prio || 'nice');
+
   return React.createElement('div', { className: 'card ' + (gift.is_purchased ? 'purchased' : '') },
     gift.image_url && React.createElement('img', { src: gift.image_url, alt: gift.title }),
     React.createElement('h3', null, gift.title),
     gift.description && React.createElement('p', null, gift.description),
     React.createElement('div', { className: 'meta' },
-      gift.price != null && React.createElement('span', null, gift.price + ' ₽'),
-      gift.category && React.createElement('span', null, CATEGORIES[gift.category]),
-      gift.priority && React.createElement('span', null, PRIORITIES[gift.priority])
+      gift.price != null && React.createElement('span', { className: 'badge price' }, gift.price + ' ₽'),
+      gift.category && React.createElement('span', { className: getCatClass(gift.category) }, CATEGORIES[gift.category]),
+      gift.priority && React.createElement('span', { className: getPrioClass(gift.priority) }, PRIORITIES[gift.priority])
     ),
     gift.url && React.createElement('a', { href: gift.url, target: '_blank', rel: 'noopener noreferrer' }, 'Открыть ссылку →'),
     mode === 'partner' && onToggle && React.createElement('button', { className: 'buy-btn', onClick: onToggle }, gift.is_purchased ? '✅ Куплено (отменить?)' : '🛒 Отметить купленным'),
-    onDelete && React.createElement('button', { onClick: onDelete, style: {marginTop: 8, background: '#FFF0F5', border: '1px solid #E62429', color: '#E62429', fontSize: 12, cursor: 'pointer', width: '100%', padding: '8px', borderRadius: '8px'} }, '🗑 Удалить подарок')
+    onDelete && React.createElement('button', { className: 'delete-btn', onClick: onDelete }, '🗑 Удалить подарок')
   );
 }
 
@@ -235,7 +298,7 @@ function GiftForm({ me, partner, onClose, onSaved }) {
 
   return React.createElement('div', { className: 'modal-bg', onClick: onClose },
     React.createElement('form', { className: 'modal', onClick: e => e.stopPropagation(), onSubmit: handleSubmit },
-      React.createElement('h2', null, 'Новый подарок'),
+      React.createElement('h2', null, 'Новый подарок 🎁'),
       React.createElement('label', null, 'Кому?',
         React.createElement('select', { value: form.for_user, onChange: e => setForm({...form, for_user: e.target.value}) },
           React.createElement('option', { value: me }, 'Мне (в мой вишлист)'),
@@ -244,17 +307,17 @@ function GiftForm({ me, partner, onClose, onSaved }) {
       ),
       React.createElement('label', null, 'Название*', React.createElement('input', { required: true, value: form.title, onChange: e => setForm({...form, title: e.target.value}) })),
       React.createElement('label', null, 'Описание', React.createElement('textarea', { value: form.description, onChange: e => setForm({...form, description: e.target.value}) })),
-      React.createElement('label', null, 'Ссылка', React.createElement('input', { type: 'url', value: form.url, onChange: e => setForm({...form, url: e.target.value}), placeholder: 'https://...' })),
+      React.createElement('label', null, 'Ссылка на товар', React.createElement('input', { type: 'url', value: form.url, onChange: e => setForm({...form, url: e.target.value}), placeholder: 'https://...' })),
       React.createElement('label', null, 'Цена, ₽', React.createElement('input', { type: 'number', value: form.price, onChange: e => setForm({...form, price: e.target.value}) })),
       React.createElement('label', null, 'Категория',
         React.createElement('select', { value: form.category, onChange: e => setForm({...form, category: e.target.value}) },
-          React.createElement('option', { value: '' }, '—'),
+          React.createElement('option', { value: '' }, '— Выбери —'),
           Object.entries(CATEGORIES).map(([k,v]) => React.createElement('option', { key: k, value: k }, v))
         )
       ),
       React.createElement('label', null, 'Приоритет',
         React.createElement('select', { value: form.priority, onChange: e => setForm({...form, priority: e.target.value}) },
-          React.createElement('option', { value: '' }, '—'),
+          React.createElement('option', { value: '' }, '— Выбери —'),
           Object.entries(PRIORITIES).map(([k,v]) => React.createElement('option', { key: k, value: k }, v))
         )
       ),
