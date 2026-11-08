@@ -12,15 +12,34 @@
 
 html, body { 
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
-  background: linear-gradient(45deg, #FFF5F8, #FFE0EC, #FFD6E4, #FFF5F8);
-  background-size: 300% 300%;
-  animation: gradientBG 10s ease infinite;
+  background: #1a1a1a;
   color: #3a2836; 
   min-height: 100vh; 
   overflow-x: hidden;
 }
 
-#root { min-height: 100vh; }
+#root { min-height: 100vh; position: relative; }
+
+/* --- ФОН С КОЛЛАЖАМИ (СЛАЙД-ШОУ) --- */
+.bg-slideshow {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background-color: #1a1a1a;
+}
+.bg-slide {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transition: opacity 1.5s ease-in-out;
+  /* Легкий темный фильтр, чтобы текст контрастировал */
+  box-shadow: inset 0 0 0 2000px rgba(0, 0, 0, 0.15); 
+}
+.bg-slide.active {
+  opacity: 1;
+}
 
 .loading-screen {
   position: fixed; inset: 0; background: linear-gradient(135deg, #FFF5F8, #FFD6E4);
@@ -32,42 +51,45 @@ html, body {
 .loading-bar-fill { height: 100%; background: linear-gradient(90deg, #FF6B9D, #E62429); width: 0%; transition: width 0.1s; border-radius: 20px; }
 .love-text { font-size: 20px; font-weight: bold; color: #E62429; animation: pulse 1.5s infinite; }
 
-.center { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
-.login-form { background: rgba(255, 255, 255, 0.95); padding: 32px 24px; border-radius: 24px; box-shadow: 0 20px 60px rgba(255,107,157,0.15); width: 100%; max-width: 400px; text-align: center; border: 2px solid #FFD6E4; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+.center { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; position: relative; z-index: 2; }
+.login-form { background: rgba(255, 255, 255, 0.85); padding: 32px 24px; border-radius: 24px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); width: 100%; max-width: 400px; text-align: center; border: 2px solid rgba(255,255,255,0.5); animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); backdrop-filter: blur(15px); }
 .login-form h1 { font-size: 26px; margin-bottom: 4px; }
-.subtitle { color: #8a6b7a; margin-bottom: 24px; font-size: 14px; }
+.subtitle { color: #6a4a5a; margin-bottom: 24px; font-size: 14px; font-weight: 600; }
 .login-form input { width: 100%; padding: 14px 16px; margin-bottom: 12px; border: 2px solid #FFD6E4; border-radius: 12px; font-size: 16px; background: #FFF9FB; outline: none; transition: 0.3s; }
 .login-form input:focus { border-color: #FF6B9D; box-shadow: 0 0 10px rgba(255,107,157,0.3); }
 .login-form button { width: 100%; padding: 14px; background: linear-gradient(135deg, #FF6B9D, #FF8FB8); color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 8px; transition: 0.2s; }
 .login-form button:active { transform: scale(0.95); }
-.error { color: #E62429; font-size: 14px; margin-bottom: 8px; }
+.error { color: #E62429; font-size: 14px; margin-bottom: 8px; font-weight: bold; }
 
-.app { max-width: 1100px; margin: 0 auto; padding: 16px; }
-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 0 16px; border-bottom: 2px solid #FFD6E4; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
-header h1 { font-size: 20px; display: flex; align-items: center; gap: 8px; }
-.avatar { width: 44px; height: 44px; border-radius: 50%; background: white; border: 3px solid #FF6B9D; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 0 15px rgba(255,107,157,0.4); overflow: hidden; }
+.app { max-width: 1000px; margin: 0 auto; padding: 16px; position: relative; z-index: 2; }
+
+/* Стеклянная шапка */
+header { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; border-radius: 20px; background: rgba(255,255,255,0.7); backdrop-filter: blur(15px); border: 2px solid rgba(255,255,255,0.8); margin-bottom: 20px; flex-wrap: wrap; gap: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+header h1 { font-size: 20px; display: flex; align-items: center; gap: 8px; color: #3a2836;}
+.avatar { width: 44px; height: 44px; border-radius: 50%; background: white; border: 3px solid #FF6B9D; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 0 15px rgba(255,107,157,0.6); overflow: hidden; }
 .avatar img { width: 100%; height: 100%; object-fit: cover; }
 
-.logout { padding: 8px 14px; background: rgba(255, 255, 255, 0.9); border: 2px solid #FFD6E4; border-radius: 10px; cursor: pointer; font-size: 14px; transition: 0.2s; }
+.logout { padding: 8px 14px; background: white; border: 2px solid #FFD6E4; border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: 600; color: #E62429; transition: 0.2s; }
 .logout:active { transform: scale(0.9); }
 
 .actions-row { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-.add-btn { flex: 2; min-width: 200px; padding: 14px; background: linear-gradient(135deg, #E62429, #FF6B9D); color: white; border: none; border-radius: 14px; font-size: 16px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 20px rgba(230,36,41,0.25); animation: pulse 2s infinite; }
-.surprise-btn { flex: 1; min-width: 150px; padding: 14px; background: linear-gradient(135deg, #9B5DE5, #F15BB5); color: white; border: none; border-radius: 14px; font-size: 16px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 20px rgba(155,93,229,0.3); animation: pulse 2s infinite; }
+.add-btn { flex: 2; min-width: 200px; padding: 14px; background: linear-gradient(135deg, #E62429, #FF6B9D); color: white; border: none; border-radius: 14px; font-size: 16px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 20px rgba(230,36,41,0.4); animation: pulse 2s infinite; }
+.surprise-btn { flex: 1; min-width: 150px; padding: 14px; background: linear-gradient(135deg, #9B5DE5, #F15BB5); color: white; border: none; border-radius: 14px; font-size: 16px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 20px rgba(155,93,229,0.4); animation: pulse 2s infinite; }
 .add-btn:active, .surprise-btn:active { transform: scale(0.95); }
 
+/* Стеклянные колонки */
 .lists { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 @media (max-width: 700px) { .lists { grid-template-columns: 1fr; } }
-.column { background: rgba(255,255,255,0.85); border-radius: 20px; padding: 16px; border: 2px solid #FFD6E4; backdrop-filter: blur(5px); box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-.column h2 { font-size: 18px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-.empty { color: #8a6b7a; font-size: 14px; text-align: center; padding: 20px 0; }
+.column { background: rgba(255, 255, 255, 0.75); border-radius: 20px; padding: 16px; border: 2px solid rgba(255,255,255,0.9); backdrop-filter: blur(15px); box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
+.column h2 { font-size: 18px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; color: #E62429; }
+.empty { color: #6a4a5a; font-size: 14px; text-align: center; padding: 20px 0; font-weight: 600; }
 
-.card { background: white; border-radius: 16px; padding: 14px; margin-bottom: 12px; border: 2px solid #FFD6E4; box-shadow: 0 4px 12px rgba(255,107,157,0.08); animation: slideInUp 0.4s ease-out forwards; opacity: 0; transition: transform 0.2s; }
-.card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(255,107,157,0.2); }
+.card { background: rgba(255, 255, 255, 0.95); border-radius: 16px; padding: 14px; margin-bottom: 12px; border: 2px solid #FFD6E4; box-shadow: 0 4px 12px rgba(0,0,0,0.05); animation: slideInUp 0.4s ease-out forwards; opacity: 0; transition: transform 0.2s; }
+.card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(255,107,157,0.3); }
 .card img { width: 100%; border-radius: 10px; margin-bottom: 10px; }
 .card h3 { font-size: 16px; margin-bottom: 6px; }
 .card p { font-size: 14px; color: #6a4a5a; margin-bottom: 8px; }
-.card.purchased { opacity: 0.6; border-style: dashed; background: #FFF9FB; }
+.card.purchased { opacity: 0.6; border-style: dashed; background: rgba(255, 249, 251, 0.9); }
 .card.purchased h3 { text-decoration: line-through; }
 
 .meta { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
@@ -91,7 +113,7 @@ header h1 { font-size: 20px; display: flex; align-items: center; gap: 8px; }
 .delete-btn { margin-top: 8px; background: #E62429; border: none; color: white; font-size: 13px; font-weight: bold; cursor: pointer; width: 100%; padding: 10px; border-radius: 8px; transition: 0.2s; box-shadow: 0 4px 10px rgba(230,36,41,0.3); }
 .delete-btn:active { transform: scale(0.95); background: #b01b1f; }
 
-.modal-bg { position: fixed; inset: 0; background: rgba(58,40,54,0.6); display: flex; align-items: flex-end; justify-content: center; z-index: 100; animation: fadeIn 0.3s ease-out; backdrop-filter: blur(3px); }
+.modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: flex-end; justify-content: center; z-index: 100; animation: fadeIn 0.3s ease-out; backdrop-filter: blur(5px); }
 @media (min-width: 700px) { .modal-bg { align-items: center; padding: 20px; } }
 .modal { background: white; padding: 24px 20px; border-radius: 24px 24px 0 0; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; animation: slideUpMobile 0.3s ease-out; }
 @media (min-width: 700px) { .modal { border-radius: 24px; animation: popIn 0.3s ease-out; } }
@@ -108,7 +130,6 @@ header h1 { font-size: 20px; display: flex; align-items: center; gap: 8px; }
 .surprise-result .icon { font-size: 50px; margin-bottom: 10px; animation: popIn 0.5s; }
 .surprise-result h3 { font-size: 22px; color: #E62429; margin-bottom: 10px; }
 
-@keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
 @keyframes popIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
 @keyframes slideInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
@@ -129,17 +150,43 @@ const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const CATEGORIES = { under2000: '💰 до 2000', big: '💎 крупный', handmade: '🎨 handmade', experience: '✨ впечатление', other: '🎁 прочее' };
 const PRIORITIES = { must: '🔥 очень хочу', nice: '🙂 было бы славно', dream: '🌟 мечта' };
 
-// Ссылки на ваши аватарки
 const SPIDER_AVATAR = 'https://i.postimg.cc/nsKzLvcG/e68292b7dce9918224d7a43246c4f4f6-(1).jpg';
 const KITTY_AVATAR = 'https://i.postimg.cc/94H0VxVg/04c2467f385af626b7edd1c408596c26.jpg';
 
-// Функция для красивых имен (Владик, Юлька)
+const COLLAGES = [
+  'https://i.postimg.cc/Pp5YKkbp/IMG-20261108-211354-702.jpg',
+  'https://i.postimg.cc/MMpVt80f/IMG-20261108-211354-805.jpg',
+  'https://i.postimg.cc/p9ZKDdjj/IMG-20261108-211355-114.jpg',
+  'https://i.postimg.cc/06f7pNSG/IMG-20261108-211355-366.jpg'
+];
+
 function formatName(name) {
   if (!name) return '';
   const lower = name.toLowerCase();
   if (lower === 'влад') return 'Владик';
   if (lower === 'юля') return 'Юлька';
   return name;
+}
+
+function BackgroundSlideshow() {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex(prev => (prev + 1) % COLLAGES.length);
+    }, 7000); // Смена каждые 7 секунд
+    return () => clearInterval(interval);
+  }, []);
+
+  return React.createElement('div', { className: 'bg-slideshow' },
+    COLLAGES.map((url, index) => 
+      React.createElement('div', { 
+        key: index, 
+        className: 'bg-slide ' + (index === currentIndex ? 'active' : ''),
+        style: { backgroundImage: `url(${url})` }
+      })
+    )
+  );
 }
 
 function LoadingScreen() {
@@ -225,7 +272,11 @@ function App() {
   }
 
   if (appLoading || dataLoading) return React.createElement(LoadingScreen);
-  if (!session) return React.createElement(Login);
+
+  if (!session) return React.createElement(React.Fragment, null,
+    React.createElement(BackgroundSlideshow),
+    React.createElement(Login)
+  );
 
   const myWishlist = gifts.filter(g => g.for_user === session.user.id);
   const partnerWishlist = gifts.filter(g => g.for_user !== session.user.id);
@@ -236,66 +287,69 @@ function App() {
   const myName = formatName(profile?.name) || 'Я';
   const partnerName = formatName(partner?.name) || 'Партнёр';
 
-  return React.createElement('div', { className: 'app' },
-    React.createElement('header', null,
-      React.createElement('h1', null, 
-        React.createElement('div', { className: 'avatar' }, 
-          myAvatar ? React.createElement('img', { src: myAvatar, alt: 'me' }) : (profile?.emoji || '💗')
+  return React.createElement(React.Fragment, null,
+    React.createElement(BackgroundSlideshow),
+    React.createElement('div', { className: 'app' },
+      React.createElement('header', null,
+        React.createElement('h1', null, 
+          React.createElement('div', { className: 'avatar' }, 
+            myAvatar ? React.createElement('img', { src: myAvatar, alt: 'me' }) : (profile?.emoji || '💗')
+          ),
+          React.createElement('span', null, myName),
+          React.createElement('span', null, '+'),
+          React.createElement('div', { className: 'avatar' }, 
+            partnerAvatar ? React.createElement('img', { src: partnerAvatar, alt: 'partner' }) : (partner?.emoji || '💗')
+          ),
+          React.createElement('span', null, partnerName)
         ),
-        React.createElement('span', null, myName),
-        React.createElement('span', null, '+'),
-        React.createElement('div', { className: 'avatar' }, 
-          partnerAvatar ? React.createElement('img', { src: partnerAvatar, alt: 'partner' }) : (partner?.emoji || '💗')
-        ),
-        React.createElement('span', null, partnerName)
+        React.createElement('button', { className: 'logout', onClick: () => db.auth.signOut() }, 'Выйти')
       ),
-      React.createElement('button', { className: 'logout', onClick: () => db.auth.signOut() }, 'Выйти')
-    ),
-    
-    React.createElement('div', { className: 'actions-row' },
-      React.createElement('button', { className: 'add-btn', onClick: () => setShowForm(true) }, '➕ Добавить подарок'),
-      React.createElement('button', { className: 'surprise-btn', onClick: handleRandomGift }, '🎲 Подари мне сюрприз')
-    ),
+      
+      React.createElement('div', { className: 'actions-row' },
+        React.createElement('button', { className: 'add-btn', onClick: () => setShowForm(true) }, '➕ Добавить подарок'),
+        React.createElement('button', { className: 'surprise-btn', onClick: handleRandomGift }, '🎲 Подари мне сюрприз')
+      ),
 
-    showForm && React.createElement(GiftForm, { me: session.user.id, partner: partner, partnerName: partnerName, onClose: () => setShowForm(false), onSaved: () => { setShowForm(false); loadData(); } }),
-    
-    randomGift && React.createElement('div', { className: 'modal-bg', onClick: () => setRandomGift(null) },
-      React.createElement('div', { className: 'modal', onClick: e => e.stopPropagation() },
-        React.createElement('h2', null, '🎁 Твой сюрприз!'),
-        React.createElement('div', { className: 'surprise-result' },
-          React.createElement('div', { className: 'icon' }, '🎉'),
-          React.createElement('h3', null, randomGift.title),
-          randomGift.price != null && React.createElement('p', null, 'Цена: ' + randomGift.price + ' ₽'),
-          React.createElement('p', { style: { marginTop: '10px', color: '#666' } }, 'Это отличная идея для подарка!'),
-          React.createElement('button', { 
-            className: 'buy-btn', 
-            style: { marginTop: '20px' },
-            onClick: () => { togglePurchase(randomGift.id); setRandomGift(null); }
-          }, '🛒 Я дарю это!')
-        ),
-        React.createElement('div', { className: 'modal-actions' },
-          React.createElement('button', { type: 'button', onClick: () => setRandomGift(null) }, 'Закрыть')
+      showForm && React.createElement(GiftForm, { me: session.user.id, partner: partner, partnerName: partnerName, onClose: () => setShowForm(false), onSaved: () => { setShowForm(false); loadData(); } }),
+      
+      randomGift && React.createElement('div', { className: 'modal-bg', onClick: () => setRandomGift(null) },
+        React.createElement('div', { className: 'modal', onClick: e => e.stopPropagation() },
+          React.createElement('h2', null, '🎁 Твой сюрприз!'),
+          React.createElement('div', { className: 'surprise-result' },
+            React.createElement('div', { className: 'icon' }, '🎉'),
+            React.createElement('h3', null, randomGift.title),
+            randomGift.price != null && React.createElement('p', null, 'Цена: ' + randomGift.price + ' ₽'),
+            React.createElement('p', { style: { marginTop: '10px', color: '#666' } }, 'Это отличная идея для подарка!'),
+            React.createElement('button', { 
+              className: 'buy-btn', 
+              style: { marginTop: '20px' },
+              onClick: () => { togglePurchase(randomGift.id); setRandomGift(null); }
+            }, '🛒 Я дарю это!')
+          ),
+          React.createElement('div', { className: 'modal-actions' },
+            React.createElement('button', { type: 'button', onClick: () => setRandomGift(null) }, 'Закрыть')
+          )
         )
-      )
-    ),
-
-    React.createElement('section', { className: 'lists' },
-      React.createElement('div', { className: 'column' },
-        React.createElement('h2', null, '🎁 Что я хочу'),
-        myWishlist.length === 0 && React.createElement('p', { className: 'empty' }, 'Пока пусто. Добавь мечту! 💭'),
-        myWishlist.map(g => React.createElement(GiftCard, { 
-          key: g.id, gift: g, mode: 'mine', 
-          onDelete: (g.created_by === session.user.id) ? () => deleteGift(g.id) : null 
-        }))
       ),
-      React.createElement('div', { className: 'column' },
-        React.createElement('h2', null, '💝 Чего хочет ' + partnerName),
-        partnerWishlist.length === 0 && React.createElement('p', { className: 'empty' }, 'Пока пусто 🎀'),
-        partnerWishlist.map(g => React.createElement(GiftCard, { 
-          key: g.id, gift: g, mode: 'partner', 
-          onToggle: () => togglePurchase(g.id), 
-          onDelete: (g.created_by === session.user.id) ? () => deleteGift(g.id) : null 
-        }))
+
+      React.createElement('section', { className: 'lists' },
+        React.createElement('div', { className: 'column' },
+          React.createElement('h2', null, '🎁 Что я хочу'),
+          myWishlist.length === 0 && React.createElement('p', { className: 'empty' }, 'Пока пусто. Добавь мечту! 💭'),
+          myWishlist.map(g => React.createElement(GiftCard, { 
+            key: g.id, gift: g, mode: 'mine', 
+            onDelete: (g.created_by === session.user.id) ? () => deleteGift(g.id) : null 
+          }))
+        ),
+        React.createElement('div', { className: 'column' },
+          React.createElement('h2', null, '💝 Чего хочет ' + partnerName),
+          partnerWishlist.length === 0 && React.createElement('p', { className: 'empty' }, 'Пока пусто 🎀'),
+          partnerWishlist.map(g => React.createElement(GiftCard, { 
+            key: g.id, gift: g, mode: 'partner', 
+            onToggle: () => togglePurchase(g.id), 
+            onDelete: (g.created_by === session.user.id) ? () => deleteGift(g.id) : null 
+          }))
+        )
       )
     )
   );
