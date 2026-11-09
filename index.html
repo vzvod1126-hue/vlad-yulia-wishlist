@@ -67,13 +67,14 @@ header h1 { font-size: 18px; display: flex; align-items: center; gap: 8px; flex-
 .logout { padding: 8px 14px; background: white; border: 2px solid #FFD6E4; border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: 600; color: #E62429; transition: 0.2s; }
 .logout:active { transform: scale(0.9); }
 
-.info-panel { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-.timer-box { flex: 2; min-width: 250px; background: rgba(255,255,255,0.9); padding: 14px 20px; border-radius: 16px; border: 2px solid #FFD6E4; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; flex-direction: column; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
-.timer-title { font-size: 14px; color: #6a4a5a; font-weight: 600; margin-bottom: 4px; }
-.timer-digits { font-size: 20px; font-weight: bold; color: #E62429; }
-.stats-box { flex: 1; min-width: 200px; background: rgba(255,255,255,0.9); padding: 14px; border-radius: 16px; border: 2px solid #FFD6E4; box-shadow: 0 4px 15px rgba(0,0,0,0.05); backdrop-filter: blur(5px); display: flex; flex-direction: column; justify-content: center; gap: 6px; }
-.stat-row { display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; color: #6a4a5a; }
-.stat-row span:last-child { color: #E62429; font-weight: bold; }
+/* ПАНЕЛЬ СТАТИСТИКИ И КНОПКОЙ ДАТ */
+.top-panel { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+.dates-btn { flex: 1; min-width: 200px; padding: 14px; background: rgba(255,255,255,0.9); border: 2px solid #FFD6E4; border-radius: 16px; font-size: 16px; font-weight: 700; color: #E62429; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.05); backdrop-filter: blur(5px); transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.dates-btn:active { transform: scale(0.95); }
+.stats-box { flex: 2; min-width: 250px; background: rgba(255,255,255,0.9); padding: 10px 16px; border-radius: 16px; border: 2px solid #FFD6E4; box-shadow: 0 4px 15px rgba(0,0,0,0.05); backdrop-filter: blur(5px); display: flex; justify-content: space-around; align-items: center; }
+.stat-item { text-align: center; }
+.stat-value { font-size: 18px; font-weight: bold; color: #E62429; }
+.stat-label { font-size: 11px; color: #6a4a5a; font-weight: 600; }
 
 .actions-row { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
 .add-btn { flex: 2; min-width: 200px; padding: 14px; background: linear-gradient(135deg, #E62429, #FF6B9D); color: white; border: none; border-radius: 14px; font-size: 16px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 20px rgba(230,36,41,0.25); animation: pulse 2s infinite; }
@@ -131,6 +132,12 @@ header h1 { font-size: 18px; display: flex; align-items: center; gap: 8px; flex-
 .modal-actions button[type="submit"] { background: linear-gradient(135deg, #FF6B9D, #FF8FB8); color: white; }
 .modal-actions button:active { transform: scale(0.95); }
 
+/* Стили для списка дат */
+.dates-list { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+.date-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: #FFF9FB; border: 2px solid #FFD6E4; border-radius: 12px; }
+.date-item-title { font-weight: 700; color: #3a2836; font-size: 15px; }
+.date-item-days { font-weight: bold; color: #E62429; font-size: 16px; white-space: nowrap; }
+
 .surprise-result { text-align: center; padding: 20px 0; }
 .surprise-result .icon { font-size: 50px; margin-bottom: 10px; animation: popIn 0.5s; }
 .surprise-result h3 { font-size: 22px; color: #E62429; margin-bottom: 10px; }
@@ -167,7 +174,7 @@ const COLLAGES = [
   'https://i.postimg.cc/06f7pNSG/IMG-20261108-211355-366.jpg'
 ];
 
-// 📅 ГОД ИСПРАВЛЕН НА 2026
+// 📅 ГОД 2026
 const RELATIONSHIP_START = new Date('2026-08-20T00:00:00'); 
 
 function getRelationshipMilestones() {
@@ -252,9 +259,10 @@ function App() {
   const [showForm, setShowForm] = useState(false);
   const [editingGift, setEditingGift] = useState(null);
   const [randomGift, setRandomGift] = useState(null);
-
-  const [nearestHoliday, setNearestHoliday] = useState(null);
-  const [timeLeft, setTimeLeft] = useState('');
+  
+  // Состояние для окна с датами
+  const [showDates, setShowDates] = useState(false);
+  const [allEvents, setAllEvents] = useState([]);
 
   useEffect(() => {
     db.auth.getSession().then(({ data }) => { setSession(data.session); setAppLoading(false); });
@@ -263,28 +271,6 @@ function App() {
   }, []);
 
   useEffect(() => { if (session) loadData(); else setDataLoading(false); }, [session]);
-
-  useEffect(() => {
-    if (!nearestHoliday || !nearestHoliday.date) return;
-    const updateTimer = () => {
-      const now = new Date().getTime();
-      const target = new Date(nearestHoliday.date).getTime();
-      const distance = target - now;
-
-      if (distance < 0) {
-        setTimeLeft('Праздник уже наступил! 🎉');
-        return;
-      }
-      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-      setTimeLeft(`${days} д. ${hours} ч. ${minutes} м. ${seconds} с.`);
-    };
-    updateTimer();
-    const interval = setInterval(updateTimer, 1000);
-    return () => clearInterval(interval);
-  }, [nearestHoliday]);
 
   async function loadData() {
     setDataLoading(true);
@@ -296,21 +282,16 @@ function App() {
     const { data: g, error } = await db.rpc('get_gifts');
     if (!error) setGifts(g || []);
 
+    // Собираем все даты (из базы + годовщины)
     const { data: h } = await db.from('holidays').select('*').not('date', 'is', null);
-    
     const dbHolidays = h || [];
     const milestones = getRelationshipMilestones();
-    const allEvents = [...dbHolidays, ...milestones];
-
-    if (allEvents.length > 0) {
-      const upcoming = allEvents
-        .map(x => ({ ...x, dateObj: new Date(x.date) }))
-        .filter(x => x.dateObj >= new Date(new Date().setHours(0,0,0,0)))
-        .sort((a, b) => a.dateObj - b.dateObj);
-        
-      if (upcoming.length > 0) setNearestHoliday(upcoming[0]);
-    }
-    
+    const events = [...dbHolidays, ...milestones]
+      .map(x => ({ ...x, dateObj: new Date(x.date) }))
+      .filter(x => x.dateObj >= new Date(new Date().setHours(0,0,0,0)))
+      .sort((a, b) => a.dateObj - b.dateObj);
+      
+    setAllEvents(events);
     setDataLoading(false);
   }
 
@@ -322,12 +303,7 @@ function App() {
     if (error) { alert('Ошибка: ' + error.message); return; }
     
     if (isBuying && window.confetti) {
-      window.confetti({ 
-        particleCount: 150, 
-        spread: 80, 
-        origin: { y: 0.6 },
-        colors: ['#FF6B9D', '#E62429', '#9B5DE5', '#FFBE0B']
-      });
+      window.confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 }, colors: ['#FF6B9D', '#E62429', '#9B5DE5', '#FFBE0B'] });
     }
 
     await loadData();
@@ -364,6 +340,18 @@ function App() {
     setEditingGift(null);
   }
 
+  // Функция для расчета дней до события
+  function getDaysLeft(dateStr) {
+    const now = new Date();
+    now.setHours(0,0,0,0);
+    const target = new Date(dateStr);
+    const diffTime = target - now;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    if (diffDays === 0) return 'Сегодня! 🎉';
+    if (diffDays === 1) return 'Завтра! 🎈';
+    return diffDays + ' дн.';
+  }
+
   if (appLoading || dataLoading) return React.createElement(LoadingScreen);
 
   if (!session) return React.createElement(React.Fragment, null,
@@ -397,21 +385,46 @@ function App() {
         React.createElement('button', { className: 'logout', onClick: () => db.auth.signOut() }, 'Выйти')
       ),
 
-      React.createElement('div', { className: 'info-panel' },
-        nearestHoliday && React.createElement('div', { className: 'timer-box' },
-          React.createElement('div', { className: 'timer-title' }, (nearestHoliday.emoji || '🎉') + ' До события «' + nearestHoliday.title + '» осталось:'),
-          React.createElement('div', { className: 'timer-digits' }, timeLeft)
-        ),
+      // ПАНЕЛЬ: Кнопка дат + Статистика
+      React.createElement('div', { className: 'top-panel' },
+        React.createElement('button', { className: 'dates-btn', onClick: () => setShowDates(true) }, '📅 Все важные даты'),
         React.createElement('div', { className: 'stats-box' },
-          React.createElement('div', { className: 'stat-row' }, React.createElement('span', null, 'Всего желаний:'), React.createElement('span', null, totalWishes)),
-          React.createElement('div', { className: 'stat-row' }, React.createElement('span', null, 'Уже куплено:'), React.createElement('span', null, purchasedCount)),
-          React.createElement('div', { className: 'stat-row' }, React.createElement('span', null, 'Общая сумма:'), React.createElement('span', null, totalSum + ' ₽'))
+          React.createElement('div', { className: 'stat-item' },
+            React.createElement('div', { className: 'stat-value' }, totalWishes),
+            React.createElement('div', { className: 'stat-label' }, 'Желаний')
+          ),
+          React.createElement('div', { className: 'stat-item' },
+            React.createElement('div', { className: 'stat-value' }, purchasedCount),
+            React.createElement('div', { className: 'stat-label' }, 'Куплено')
+          ),
+          React.createElement('div', { className: 'stat-item' },
+            React.createElement('div', { className: 'stat-value' }, totalSum + ' ₽'),
+            React.createElement('div', { className: 'stat-label' }, 'Сумма')
+          )
         )
       ),
       
       React.createElement('div', { className: 'actions-row' },
         React.createElement('button', { className: 'add-btn', onClick: () => { setEditingGift(null); setShowForm(true); } }, '➕ Добавить подарок'),
         React.createElement('button', { className: 'surprise-btn', onClick: handleRandomGift }, '🎲 Подари мне сюрприз')
+      ),
+
+      // ОКНО С ДАТАМИ
+      showDates && React.createElement('div', { className: 'modal-bg', onClick: () => setShowDates(false) },
+        React.createElement('div', { className: 'modal', onClick: e => e.stopPropagation() },
+          React.createElement('h2', null, '📅 Важные даты'),
+          React.createElement('div', { className: 'dates-list' },
+            allEvents.map((ev, idx) => 
+              React.createElement('div', { key: idx, className: 'date-item' },
+                React.createElement('div', { className: 'date-item-title' }, (ev.emoji || '🎉') + ' ' + ev.title),
+                React.createElement('div', { className: 'date-item-days' }, getDaysLeft(ev.date))
+              )
+            )
+          ),
+          React.createElement('div', { className: 'modal-actions' },
+            React.createElement('button', { type: 'button', onClick: () => setShowDates(false) }, 'Закрыть')
+          )
+        )
       ),
 
       showForm && React.createElement(GiftForm, { 
@@ -536,7 +549,7 @@ function GiftForm({ me, partner, partnerName, initialData, onClose, onSaved, onD
 
     let error;
     if (initialData) {
-      // Добавил .select() чтобы база точно вернула результат и мы поймали ошибку, если RLS блокирует
+      // Используем update и select, чтобы поймать ошибку RLS, если она есть
       const res = await db.from('gifts').update(payload).eq('id', initialData.id).select();
       error = res.error;
     } else {
