@@ -67,7 +67,6 @@ header h1 { font-size: 18px; display: flex; align-items: center; gap: 8px; flex-
 .logout { padding: 8px 14px; background: white; border: 2px solid #FFD6E4; border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: 600; color: #E62429; transition: 0.2s; }
 .logout:active { transform: scale(0.9); }
 
-/* ПАНЕЛЬ СТАТИСТИКИ И КНОПКОЙ ДАТ */
 .top-panel { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
 .dates-btn { flex: 1; min-width: 200px; padding: 14px; background: rgba(255,255,255,0.9); border: 2px solid #FFD6E4; border-radius: 16px; font-size: 16px; font-weight: 700; color: #E62429; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.05); backdrop-filter: blur(5px); transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
 .dates-btn:active { transform: scale(0.95); }
@@ -132,7 +131,6 @@ header h1 { font-size: 18px; display: flex; align-items: center; gap: 8px; flex-
 .modal-actions button[type="submit"] { background: linear-gradient(135deg, #FF6B9D, #FF8FB8); color: white; }
 .modal-actions button:active { transform: scale(0.95); }
 
-/* Стили для списка дат */
 .dates-list { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
 .date-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: #FFF9FB; border: 2px solid #FFD6E4; border-radius: 12px; }
 .date-item-title { font-weight: 700; color: #3a2836; font-size: 15px; }
@@ -174,13 +172,36 @@ const COLLAGES = [
   'https://i.postimg.cc/06f7pNSG/IMG-20261108-211355-366.jpg'
 ];
 
-// 📅 ГОД 2026
 const RELATIONSHIP_START = new Date('2026-08-20T00:00:00'); 
 
-function getRelationshipMilestones() {
-  const milestones = [];
+// Получаем следующую дату для ежегодных праздников
+function getNextOccurrence(month, day) {
   const now = new Date();
+  now.setHours(0,0,0,0);
+  let year = now.getFullYear();
+  let target = new Date(year, month - 1, day);
+  if (target < now) {
+    target = new Date(year + 1, month - 1, day);
+  }
+  return target;
+}
+
+function getAllEvents() {
+  const events = [];
+  const now = new Date();
+  now.setHours(0,0,0,0);
+
+  // 1. Ежегодные праздники
+  events.push({ title: 'Новый год', date: getNextOccurrence(1, 1), emoji: '🎄' });
+  events.push({ title: '14 февраля', date: getNextOccurrence(2, 14), emoji: '💝' });
+  events.push({ title: '23 февраля', date: getNextOccurrence(2, 23), emoji: '🎖️' });
+  events.push({ title: '8 марта', date: getNextOccurrence(3, 8), emoji: '🌷' });
   
+  // 2. Дни рождения
+  events.push({ title: 'День рождения Юльки', date: getNextOccurrence(7, 29), emoji: '🎀' });
+  events.push({ title: 'День рождения Владика', date: getNextOccurrence(8, 16), emoji: '🕷️' });
+
+  // 3. Годовщины
   for (let i = 1; i <= 10; i++) {
     const months = i * 6;
     const targetDate = new Date(RELATIONSHIP_START.getFullYear(), RELATIONSHIP_START.getMonth() + months, RELATIONSHIP_START.getDate());
@@ -195,15 +216,12 @@ function getRelationshipMilestones() {
       } else {
         label = months + ' месяцев вместе';
       }
-      
-      milestones.push({ 
-        title: label, 
-        date: targetDate.toISOString().split('T')[0], 
-        emoji: '💍' 
-      });
+      events.push({ title: label, date: targetDate, emoji: '💍' });
     }
   }
-  return milestones;
+
+  // Сортируем по дате
+  return events.sort((a, b) => a.date - b.date);
 }
 
 function formatName(name) {
@@ -260,7 +278,6 @@ function App() {
   const [editingGift, setEditingGift] = useState(null);
   const [randomGift, setRandomGift] = useState(null);
   
-  // Состояние для окна с датами
   const [showDates, setShowDates] = useState(false);
   const [allEvents, setAllEvents] = useState([]);
 
@@ -282,16 +299,8 @@ function App() {
     const { data: g, error } = await db.rpc('get_gifts');
     if (!error) setGifts(g || []);
 
-    // Собираем все даты (из базы + годовщины)
-    const { data: h } = await db.from('holidays').select('*').not('date', 'is', null);
-    const dbHolidays = h || [];
-    const milestones = getRelationshipMilestones();
-    const events = [...dbHolidays, ...milestones]
-      .map(x => ({ ...x, dateObj: new Date(x.date) }))
-      .filter(x => x.dateObj >= new Date(new Date().setHours(0,0,0,0)))
-      .sort((a, b) => a.dateObj - b.dateObj);
-      
-    setAllEvents(events);
+    // Загружаем все даты (праздники + годовщины)
+    setAllEvents(getAllEvents());
     setDataLoading(false);
   }
 
@@ -340,12 +349,10 @@ function App() {
     setEditingGift(null);
   }
 
-  // Функция для расчета дней до события
-  function getDaysLeft(dateStr) {
+  function getDaysLeft(dateObj) {
     const now = new Date();
     now.setHours(0,0,0,0);
-    const target = new Date(dateStr);
-    const diffTime = target - now;
+    const diffTime = dateObj - now;
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     if (diffDays === 0) return 'Сегодня! 🎉';
     if (diffDays === 1) return 'Завтра! 🎈';
@@ -385,7 +392,6 @@ function App() {
         React.createElement('button', { className: 'logout', onClick: () => db.auth.signOut() }, 'Выйти')
       ),
 
-      // ПАНЕЛЬ: Кнопка дат + Статистика
       React.createElement('div', { className: 'top-panel' },
         React.createElement('button', { className: 'dates-btn', onClick: () => setShowDates(true) }, '📅 Все важные даты'),
         React.createElement('div', { className: 'stats-box' },
@@ -409,14 +415,13 @@ function App() {
         React.createElement('button', { className: 'surprise-btn', onClick: handleRandomGift }, '🎲 Подари мне сюрприз')
       ),
 
-      // ОКНО С ДАТАМИ
       showDates && React.createElement('div', { className: 'modal-bg', onClick: () => setShowDates(false) },
         React.createElement('div', { className: 'modal', onClick: e => e.stopPropagation() },
           React.createElement('h2', null, '📅 Важные даты'),
           React.createElement('div', { className: 'dates-list' },
             allEvents.map((ev, idx) => 
               React.createElement('div', { key: idx, className: 'date-item' },
-                React.createElement('div', { className: 'date-item-title' }, (ev.emoji || '🎉') + ' ' + ev.title),
+                React.createElement('div', { className: 'date-item-title' }, ev.emoji + ' ' + ev.title),
                 React.createElement('div', { className: 'date-item-days' }, getDaysLeft(ev.date))
               )
             )
@@ -549,7 +554,6 @@ function GiftForm({ me, partner, partnerName, initialData, onClose, onSaved, onD
 
     let error;
     if (initialData) {
-      // Используем update и select, чтобы поймать ошибку RLS, если она есть
       const res = await db.from('gifts').update(payload).eq('id', initialData.id).select();
       error = res.error;
     } else {
