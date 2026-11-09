@@ -167,15 +167,13 @@ const COLLAGES = [
   'https://i.postimg.cc/06f7pNSG/IMG-20261108-211355-366.jpg'
 ];
 
-// 📅 ЗДЕСЬ МЕНЯЕМ ГОД НАЧАЛА ОТНОШЕНИЙ (если 2024, то поставь 2024)
-const RELATIONSHIP_START = new Date('2025-08-20T00:00:00'); 
+// 📅 ГОД ИСПРАВЛЕН НА 2026
+const RELATIONSHIP_START = new Date('2026-08-20T00:00:00'); 
 
-// Функция для расчета годовщин
 function getRelationshipMilestones() {
   const milestones = [];
   const now = new Date();
   
-  // Считаем от полугода (6 мес) до 5 лет (60 мес)
   for (let i = 1; i <= 10; i++) {
     const months = i * 6;
     const targetDate = new Date(RELATIONSHIP_START.getFullYear(), RELATIONSHIP_START.getMonth() + months, RELATIONSHIP_START.getDate());
@@ -298,10 +296,8 @@ function App() {
     const { data: g, error } = await db.rpc('get_gifts');
     if (!error) setGifts(g || []);
 
-    // Получаем праздники из базы
     const { data: h } = await db.from('holidays').select('*').not('date', 'is', null);
     
-    // Смешиваем праздники из базы с нашими автоматическими годовщинами
     const dbHolidays = h || [];
     const milestones = getRelationshipMilestones();
     const allEvents = [...dbHolidays, ...milestones];
@@ -540,11 +536,12 @@ function GiftForm({ me, partner, partnerName, initialData, onClose, onSaved, onD
 
     let error;
     if (initialData) {
-      const res = await db.from('gifts').update(payload).eq('id', initialData.id);
+      // Добавил .select() чтобы база точно вернула результат и мы поймали ошибку, если RLS блокирует
+      const res = await db.from('gifts').update(payload).eq('id', initialData.id).select();
       error = res.error;
     } else {
       payload.created_by = me;
-      const res = await db.from('gifts').insert(payload);
+      const res = await db.from('gifts').insert(payload).select();
       error = res.error;
     }
 
