@@ -4,6 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Владик 🕷️ + Юлька Шпулька 🎀 — вишлист</title>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -22,71 +23,27 @@ html, body {
 
 #root { min-height: 100vh; position: relative; }
 
-/* --- СТИЛИ ДЛЯ ФОНОВЫХ КОЛЛАЖЕЙ (ПОЛАРОИДОВ) --- */
-.polaroid-board {
-  position: fixed;
-  inset: 0;
-  pointer-events: none; 
-  z-index: 1; 
-  overflow: hidden;
-}
-.polaroid {
-  position: absolute;
-  background: white;
-  padding: 10px 10px 35px 10px;
-  box-shadow: 0 15px 35px rgba(0,0,0,0.15);
-  border-radius: 4px;
-  width: 210px;
-}
-.polaroid img { 
-  width: 100%; 
-  height: auto; 
-  display: block; 
-  border-radius: 2px; 
-  object-fit: cover;
-  animation: fadeImg 1s ease-in-out;
-}
-.polaroid::before {
-  content: '';
-  position: absolute;
-  top: -12px; left: 50%;
-  transform: translateX(-50%) rotate(-2deg);
-  width: 80px; height: 22px;
-  background: rgba(255, 255, 255, 0.6);
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-  border: 1px solid rgba(0,0,0,0.05);
-}
-/* Размещение по краям (для планшетов и ПК) */
+.polaroid-board { position: fixed; inset: 0; pointer-events: none; z-index: 1; overflow: hidden; }
+.polaroid { position: absolute; background: white; padding: 10px 10px 35px 10px; box-shadow: 0 15px 35px rgba(0,0,0,0.15); border-radius: 4px; width: 210px; }
+.polaroid img { width: 100%; height: auto; display: block; border-radius: 2px; object-fit: cover; animation: fadeImg 1s ease-in-out; }
+.polaroid::before { content: ''; position: absolute; top: -12px; left: 50%; transform: translateX(-50%) rotate(-2deg); width: 80px; height: 22px; background: rgba(255, 255, 255, 0.6); box-shadow: 0 2px 5px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.05); }
 .pol-1 { top: 10%; left: 1%; transform: rotate(-6deg); }
 .pol-2 { top: 8%; right: 1%; transform: rotate(5deg); width: 230px; }
 .pol-3 { bottom: 5%; left: 2%; transform: rotate(7deg); width: 220px; }
 .pol-4 { bottom: 10%; right: 2%; transform: rotate(-5deg); width: 210px; }
 
-/* МОБИЛЬНАЯ ВЕРСИЯ: Делаем их видимыми, но аккуратно по краям */
 @media (max-width: 1000px) {
-  .polaroid {
-    width: 130px; /* Уменьшаем размер */
-    padding: 6px 6px 20px 6px;
-    opacity: 0.8; /* Чуть прозрачные */
-  }
+  .polaroid { width: 130px; padding: 6px 6px 20px 6px; opacity: 0.8; }
   .polaroid::before { width: 50px; height: 15px; top: -8px; }
-  
-  /* Сдвигаем за край экрана, чтобы занимали меньше места */
   .pol-1 { top: 5%; left: -40px; transform: rotate(-15deg); }
   .pol-2 { top: 15%; right: -40px; transform: rotate(15deg); }
   .pol-3 { bottom: 15%; left: -40px; transform: rotate(10deg); }
   .pol-4 { bottom: 5%; right: -40px; transform: rotate(-10deg); }
-
-  /* Делаем колонки более плотными, чтобы текст читался поверх фото */
   .column { background: rgba(255, 255, 255, 0.96); }
   header { background: rgba(255, 255, 255, 0.96); }
 }
 
-.loading-screen {
-  position: fixed; inset: 0; background: linear-gradient(135deg, #FFF5F8, #FFD6E4);
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  z-index: 9999; padding: 20px; text-align: center;
-}
+.loading-screen { position: fixed; inset: 0; background: linear-gradient(135deg, #FFF5F8, #FFD6E4); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; padding: 20px; text-align: center; }
 .loading-screen h2 { font-size: 24px; margin-bottom: 20px; color: #E62429; }
 .loading-bar-bg { width: 80%; max-width: 300px; height: 20px; background: white; border-radius: 20px; border: 2px solid #FF6B9D; overflow: hidden; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(255,107,157,0.2); }
 .loading-bar-fill { height: 100%; background: linear-gradient(90deg, #FF6B9D, #E62429); width: 0%; transition: width 0.1s; border-radius: 20px; }
@@ -103,13 +60,20 @@ html, body {
 .error { color: #E62429; font-size: 14px; margin-bottom: 8px; }
 
 .app { max-width: 900px; margin: 0 auto; padding: 16px; position: relative; z-index: 10; }
-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; border-radius: 20px; backdrop-filter: blur(10px); border: 2px solid #FFD6E4; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; box-shadow: 0 10px 30px rgba(255,107,157,0.1); }
+header { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; border-radius: 20px; backdrop-filter: blur(10px); border: 2px solid #FFD6E4; margin-bottom: 12px; flex-wrap: wrap; gap: 12px; box-shadow: 0 10px 30px rgba(255,107,157,0.1); }
 header h1 { font-size: 18px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .avatar { width: 44px; height: 44px; border-radius: 50%; background: white; border: 3px solid #FF6B9D; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 0 15px rgba(255,107,157,0.4); overflow: hidden; }
 .avatar img { width: 100%; height: 100%; object-fit: cover; }
-
 .logout { padding: 8px 14px; background: white; border: 2px solid #FFD6E4; border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: 600; color: #E62429; transition: 0.2s; }
 .logout:active { transform: scale(0.9); }
+
+.info-panel { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+.timer-box { flex: 2; min-width: 250px; background: rgba(255,255,255,0.9); padding: 14px 20px; border-radius: 16px; border: 2px solid #FFD6E4; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; flex-direction: column; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
+.timer-title { font-size: 14px; color: #6a4a5a; font-weight: 600; margin-bottom: 4px; }
+.timer-digits { font-size: 20px; font-weight: bold; color: #E62429; }
+.stats-box { flex: 1; min-width: 200px; background: rgba(255,255,255,0.9); padding: 14px; border-radius: 16px; border: 2px solid #FFD6E4; box-shadow: 0 4px 15px rgba(0,0,0,0.05); backdrop-filter: blur(5px); display: flex; flex-direction: column; justify-content: center; gap: 6px; }
+.stat-row { display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; color: #6a4a5a; }
+.stat-row span:last-child { color: #E62429; font-weight: bold; }
 
 .actions-row { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
 .add-btn { flex: 2; min-width: 200px; padding: 14px; background: linear-gradient(135deg, #E62429, #FF6B9D); color: white; border: none; border-radius: 14px; font-size: 16px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 20px rgba(230,36,41,0.25); animation: pulse 2s infinite; }
@@ -142,14 +106,17 @@ header h1 { font-size: 18px; display: flex; align-items: center; gap: 8px; flex-
 .badge.prio-nice { background: #3A86FF; }
 .badge.prio-dream { background: #FFBE0B; color: #3a2836; }
 
-.card a { color: #E62429; font-size: 13px; text-decoration: none; font-weight: bold; }
+.card a { color: #E62429; font-size: 13px; text-decoration: none; font-weight: bold; display: inline-block; margin-bottom: 10px; }
 .card a:hover { text-decoration: underline; }
 
-.buy-btn { margin-top: 10px; width: 100%; padding: 10px; background: #FFF0F5; border: 2px solid #FF6B9D; color: #E62429; border-radius: 10px; font-size: 14px; cursor: pointer; font-weight: 600; transition: 0.2s; }
-.buy-btn:active { transform: scale(0.95); background: #FF6B9D; color: white; }
+.card-actions { display: flex; gap: 8px; margin-top: 10px; }
+.edit-btn { flex: 1; padding: 10px; background: #F0F4FF; border: 1px solid #3A86FF; color: #3A86FF; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+.edit-btn:active { transform: scale(0.95); background: #3A86FF; color: white; }
+.delete-btn { flex: 1; padding: 10px; background: #FFF0F5; border: 1px solid #E62429; color: #E62429; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+.delete-btn:active { transform: scale(0.95); background: #E62429; color: white; }
 
-.delete-btn { margin-top: 8px; background: #E62429; border: none; color: white; font-size: 13px; font-weight: bold; cursor: pointer; width: 100%; padding: 10px; border-radius: 8px; transition: 0.2s; box-shadow: 0 4px 10px rgba(230,36,41,0.3); }
-.delete-btn:active { transform: scale(0.95); background: #b01b1f; }
+.buy-btn { width: 100%; padding: 10px; background: #FFF0F5; border: 2px solid #FF6B9D; color: #E62429; border-radius: 10px; font-size: 14px; cursor: pointer; font-weight: 600; transition: 0.2s; }
+.buy-btn:active { transform: scale(0.95); background: #FF6B9D; color: white; }
 
 .modal-bg { position: fixed; inset: 0; background: rgba(58,40,54,0.6); display: flex; align-items: flex-end; justify-content: center; z-index: 100; animation: fadeIn 0.3s ease-out; backdrop-filter: blur(3px); }
 @media (min-width: 700px) { .modal-bg { align-items: center; padding: 20px; } }
@@ -200,6 +167,40 @@ const COLLAGES = [
   'https://i.postimg.cc/06f7pNSG/IMG-20261108-211355-366.jpg'
 ];
 
+// 📅 ЗДЕСЬ МЕНЯЕМ ГОД НАЧАЛА ОТНОШЕНИЙ (если 2024, то поставь 2024)
+const RELATIONSHIP_START = new Date('2025-08-20T00:00:00'); 
+
+// Функция для расчета годовщин
+function getRelationshipMilestones() {
+  const milestones = [];
+  const now = new Date();
+  
+  // Считаем от полугода (6 мес) до 5 лет (60 мес)
+  for (let i = 1; i <= 10; i++) {
+    const months = i * 6;
+    const targetDate = new Date(RELATIONSHIP_START.getFullYear(), RELATIONSHIP_START.getMonth() + months, RELATIONSHIP_START.getDate());
+    
+    if (targetDate > now) {
+      let label = '';
+      if (months % 12 === 0) {
+        const years = months / 12;
+        if (years === 1) label = '1 год вместе';
+        else if (years > 1 && years < 5) label = years + ' года вместе';
+        else label = years + ' лет вместе';
+      } else {
+        label = months + ' месяцев вместе';
+      }
+      
+      milestones.push({ 
+        title: label, 
+        date: targetDate.toISOString().split('T')[0], 
+        emoji: '💍' 
+      });
+    }
+  }
+  return milestones;
+}
+
 function formatName(name) {
   if (!name) return '';
   const lower = name.toLowerCase();
@@ -208,34 +209,23 @@ function formatName(name) {
   return name;
 }
 
-// Компонент, который меняет картинки местами
 function PolaroidBoard() {
   const [offset, setOffset] = useState(0);
-
   useEffect(() => {
-    const interval = setInterval(() => {
-      setOffset(prev => (prev + 1) % COLLAGES.length);
-    }, 5000); // Каждые 5 секунд
+    const interval = setInterval(() => { setOffset(prev => (prev + 1) % COLLAGES.length); }, 5000);
     return () => clearInterval(interval);
   }, []);
 
-  // Вычисляем, какая картинка в каком слоте
-  const img1 = COLLAGES[offset % 4];
-  const img2 = COLLAGES[(offset + 1) % 4];
-  const img3 = COLLAGES[(offset + 2) % 4];
-  const img4 = COLLAGES[(offset + 3) % 4];
-
   return React.createElement('div', { className: 'polaroid-board' },
-    React.createElement('div', { className: 'polaroid pol-1' }, React.createElement('img', { src: img1, alt: 'collage', key: img1 })),
-    React.createElement('div', { className: 'polaroid pol-2' }, React.createElement('img', { src: img2, alt: 'collage', key: img2 })),
-    React.createElement('div', { className: 'polaroid pol-3' }, React.createElement('img', { src: img3, alt: 'collage', key: img3 })),
-    React.createElement('div', { className: 'polaroid pol-4' }, React.createElement('img', { src: img4, alt: 'collage', key: img4 }))
+    React.createElement('div', { className: 'polaroid pol-1' }, React.createElement('img', { src: COLLAGES[offset % 4], alt: 'collage' })),
+    React.createElement('div', { className: 'polaroid pol-2' }, React.createElement('img', { src: COLLAGES[(offset + 1) % 4], alt: 'collage' })),
+    React.createElement('div', { className: 'polaroid pol-3' }, React.createElement('img', { src: COLLAGES[(offset + 2) % 4], alt: 'collage' })),
+    React.createElement('div', { className: 'polaroid pol-4' }, React.createElement('img', { src: COLLAGES[(offset + 3) % 4], alt: 'collage' }))
   );
 }
 
 function LoadingScreen() {
   const [percent, setPercent] = useState(0);
-  
   useEffect(() => {
     const interval = setInterval(() => {
       setPercent(p => {
@@ -248,9 +238,7 @@ function LoadingScreen() {
 
   return React.createElement('div', { className: 'loading-screen' },
     React.createElement('h2', null, 'Загрузка ' + percent + '%...'),
-    React.createElement('div', { className: 'loading-bar-bg' },
-      React.createElement('div', { className: 'loading-bar-fill', style: { width: percent + '%' } })
-    ),
+    React.createElement('div', { className: 'loading-bar-bg' }, React.createElement('div', { className: 'loading-bar-fill', style: { width: percent + '%' } })),
     React.createElement('div', { className: 'love-text' }, 'Моя любовь к тебе всегда 100% ❤️')
   );
 }
@@ -262,8 +250,13 @@ function App() {
   const [profile, setProfile] = useState(null);
   const [partner, setPartner] = useState(null);
   const [gifts, setGifts] = useState([]);
+  
   const [showForm, setShowForm] = useState(false);
+  const [editingGift, setEditingGift] = useState(null);
   const [randomGift, setRandomGift] = useState(null);
+
+  const [nearestHoliday, setNearestHoliday] = useState(null);
+  const [timeLeft, setTimeLeft] = useState('');
 
   useEffect(() => {
     db.auth.getSession().then(({ data }) => { setSession(data.session); setAppLoading(false); });
@@ -273,20 +266,74 @@ function App() {
 
   useEffect(() => { if (session) loadData(); else setDataLoading(false); }, [session]);
 
+  useEffect(() => {
+    if (!nearestHoliday || !nearestHoliday.date) return;
+    const updateTimer = () => {
+      const now = new Date().getTime();
+      const target = new Date(nearestHoliday.date).getTime();
+      const distance = target - now;
+
+      if (distance < 0) {
+        setTimeLeft('Праздник уже наступил! 🎉');
+        return;
+      }
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+      setTimeLeft(`${days} д. ${hours} ч. ${minutes} м. ${seconds} с.`);
+    };
+    updateTimer();
+    const interval = setInterval(updateTimer, 1000);
+    return () => clearInterval(interval);
+  }, [nearestHoliday]);
+
   async function loadData() {
     setDataLoading(true);
     const me = session.user.id;
     const { data: profiles } = await db.from('profiles').select('*');
     setProfile(profiles?.find(p => p.id === me) || null);
     setPartner(profiles?.find(p => p.id !== me) || null);
+    
     const { data: g, error } = await db.rpc('get_gifts');
     if (!error) setGifts(g || []);
+
+    // Получаем праздники из базы
+    const { data: h } = await db.from('holidays').select('*').not('date', 'is', null);
+    
+    // Смешиваем праздники из базы с нашими автоматическими годовщинами
+    const dbHolidays = h || [];
+    const milestones = getRelationshipMilestones();
+    const allEvents = [...dbHolidays, ...milestones];
+
+    if (allEvents.length > 0) {
+      const upcoming = allEvents
+        .map(x => ({ ...x, dateObj: new Date(x.date) }))
+        .filter(x => x.dateObj >= new Date(new Date().setHours(0,0,0,0)))
+        .sort((a, b) => a.dateObj - b.dateObj);
+        
+      if (upcoming.length > 0) setNearestHoliday(upcoming[0]);
+    }
+    
     setDataLoading(false);
   }
 
   async function togglePurchase(giftId) {
+    const gift = gifts.find(g => g.id === giftId);
+    const isBuying = gift && !gift.is_purchased;
+
     const { error } = await db.rpc('toggle_purchase', { gift_id: giftId });
     if (error) { alert('Ошибка: ' + error.message); return; }
+    
+    if (isBuying && window.confetti) {
+      window.confetti({ 
+        particleCount: 150, 
+        spread: 80, 
+        origin: { y: 0.6 },
+        colors: ['#FF6B9D', '#E62429', '#9B5DE5', '#FFBE0B']
+      });
+    }
+
     await loadData();
   }
 
@@ -305,14 +352,20 @@ function App() {
 
   function handleRandomGift() {
     const available = gifts.filter(g => g.for_user !== session.user.id && !g.is_purchased);
-    if (available.length === 0) {
-      alert('В списке партнёра пока нет некупленных подарков!');
-      return;
-    }
+    if (available.length === 0) { alert('В списке партнёра пока нет некупленных подарков!'); return; }
     const mustHaves = available.filter(g => g.priority === 'must');
     const pool = mustHaves.length > 0 ? mustHaves : available;
-    const random = pool[Math.floor(Math.random() * pool.length)];
-    setRandomGift(random);
+    setRandomGift(pool[Math.floor(Math.random() * pool.length)]);
+  }
+
+  function handleEditClick(gift) {
+    setEditingGift(gift);
+    setShowForm(true);
+  }
+
+  function handleCloseForm() {
+    setShowForm(false);
+    setEditingGift(null);
   }
 
   if (appLoading || dataLoading) return React.createElement(LoadingScreen);
@@ -327,34 +380,53 @@ function App() {
 
   const myAvatar = getAvatarUrl(profile);
   const partnerAvatar = getAvatarUrl(partner);
-  
   const myName = formatName(profile?.name) || 'Я';
   const partnerName = formatName(partner?.name) || 'Партнёр';
+
+  const totalWishes = gifts.length;
+  const purchasedCount = gifts.filter(g => g.is_purchased).length;
+  const totalSum = gifts.reduce((acc, curr) => acc + (curr.price || 0), 0);
 
   return React.createElement(React.Fragment, null,
     React.createElement(PolaroidBoard),
     React.createElement('div', { className: 'app' },
       React.createElement('header', null,
         React.createElement('h1', null, 
-          React.createElement('div', { className: 'avatar' }, 
-            myAvatar ? React.createElement('img', { src: myAvatar, alt: 'me' }) : (profile?.emoji || '💗')
-          ),
+          React.createElement('div', { className: 'avatar' }, myAvatar ? React.createElement('img', { src: myAvatar, alt: 'me' }) : (profile?.emoji || '💗')),
           React.createElement('span', null, myName),
           React.createElement('span', null, '+'),
-          React.createElement('div', { className: 'avatar' }, 
-            partnerAvatar ? React.createElement('img', { src: partnerAvatar, alt: 'partner' }) : (partner?.emoji || '💗')
-          ),
+          React.createElement('div', { className: 'avatar' }, partnerAvatar ? React.createElement('img', { src: partnerAvatar, alt: 'partner' }) : (partner?.emoji || '💗')),
           React.createElement('span', null, partnerName)
         ),
         React.createElement('button', { className: 'logout', onClick: () => db.auth.signOut() }, 'Выйти')
       ),
+
+      React.createElement('div', { className: 'info-panel' },
+        nearestHoliday && React.createElement('div', { className: 'timer-box' },
+          React.createElement('div', { className: 'timer-title' }, (nearestHoliday.emoji || '🎉') + ' До события «' + nearestHoliday.title + '» осталось:'),
+          React.createElement('div', { className: 'timer-digits' }, timeLeft)
+        ),
+        React.createElement('div', { className: 'stats-box' },
+          React.createElement('div', { className: 'stat-row' }, React.createElement('span', null, 'Всего желаний:'), React.createElement('span', null, totalWishes)),
+          React.createElement('div', { className: 'stat-row' }, React.createElement('span', null, 'Уже куплено:'), React.createElement('span', null, purchasedCount)),
+          React.createElement('div', { className: 'stat-row' }, React.createElement('span', null, 'Общая сумма:'), React.createElement('span', null, totalSum + ' ₽'))
+        )
+      ),
       
       React.createElement('div', { className: 'actions-row' },
-        React.createElement('button', { className: 'add-btn', onClick: () => setShowForm(true) }, '➕ Добавить подарок'),
+        React.createElement('button', { className: 'add-btn', onClick: () => { setEditingGift(null); setShowForm(true); } }, '➕ Добавить подарок'),
         React.createElement('button', { className: 'surprise-btn', onClick: handleRandomGift }, '🎲 Подари мне сюрприз')
       ),
 
-      showForm && React.createElement(GiftForm, { me: session.user.id, partner: partner, partnerName: partnerName, onClose: () => setShowForm(false), onSaved: () => { setShowForm(false); loadData(); } }),
+      showForm && React.createElement(GiftForm, { 
+        me: session.user.id, 
+        partner: partner, 
+        partnerName: partnerName, 
+        initialData: editingGift,
+        onClose: handleCloseForm, 
+        onSaved: () => { handleCloseForm(); loadData(); },
+        onDelete: (id) => { deleteGift(id); handleCloseForm(); }
+      }),
       
       randomGift && React.createElement('div', { className: 'modal-bg', onClick: () => setRandomGift(null) },
         React.createElement('div', { className: 'modal', onClick: e => e.stopPropagation() },
@@ -364,15 +436,9 @@ function App() {
             React.createElement('h3', null, randomGift.title),
             randomGift.price != null && React.createElement('p', null, 'Цена: ' + randomGift.price + ' ₽'),
             React.createElement('p', { style: { marginTop: '10px', color: '#666' } }, 'Это отличная идея для подарка!'),
-            React.createElement('button', { 
-              className: 'buy-btn', 
-              style: { marginTop: '20px' },
-              onClick: () => { togglePurchase(randomGift.id); setRandomGift(null); }
-            }, '🛒 Я дарю это!')
+            React.createElement('button', { className: 'buy-btn', style: { marginTop: '20px' }, onClick: () => { togglePurchase(randomGift.id); setRandomGift(null); } }, '🛒 Я дарю это!')
           ),
-          React.createElement('div', { className: 'modal-actions' },
-            React.createElement('button', { type: 'button', onClick: () => setRandomGift(null) }, 'Закрыть')
-          )
+          React.createElement('div', { className: 'modal-actions' }, React.createElement('button', { type: 'button', onClick: () => setRandomGift(null) }, 'Закрыть'))
         )
       ),
 
@@ -382,6 +448,7 @@ function App() {
           myWishlist.length === 0 && React.createElement('p', { className: 'empty' }, 'Пока пусто. Добавь мечту! 💭'),
           myWishlist.map(g => React.createElement(GiftCard, { 
             key: g.id, gift: g, mode: 'mine', 
+            onEdit: (g.created_by === session.user.id) ? () => handleEditClick(g) : null,
             onDelete: (g.created_by === session.user.id) ? () => deleteGift(g.id) : null 
           }))
         ),
@@ -391,6 +458,7 @@ function App() {
           partnerWishlist.map(g => React.createElement(GiftCard, { 
             key: g.id, gift: g, mode: 'partner', 
             onToggle: () => togglePurchase(g.id), 
+            onEdit: (g.created_by === session.user.id) ? () => handleEditClick(g) : null,
             onDelete: (g.created_by === session.user.id) ? () => deleteGift(g.id) : null 
           }))
         )
@@ -424,7 +492,7 @@ function Login() {
   );
 }
 
-function GiftCard({ gift, mode, onToggle, onDelete }) {
+function GiftCard({ gift, mode, onToggle, onEdit, onDelete }) {
   const getCatClass = (cat) => 'badge cat-' + (cat || 'other');
   const getPrioClass = (prio) => 'badge prio-' + (prio || 'nice');
 
@@ -438,13 +506,27 @@ function GiftCard({ gift, mode, onToggle, onDelete }) {
       gift.priority && React.createElement('span', { className: getPrioClass(gift.priority) }, PRIORITIES[gift.priority])
     ),
     gift.url && React.createElement('a', { href: gift.url, target: '_blank', rel: 'noopener noreferrer' }, 'Открыть ссылку →'),
+    
     mode === 'partner' && onToggle && React.createElement('button', { className: 'buy-btn', onClick: onToggle }, gift.is_purchased ? '✅ Куплено (отменить?)' : '🛒 Отметить купленным'),
-    onDelete && React.createElement('button', { className: 'delete-btn', onClick: onDelete }, '🗑 УДАЛИТЬ')
+    
+    (onEdit || onDelete) && React.createElement('div', { className: 'card-actions' },
+      onEdit && React.createElement('button', { className: 'edit-btn', onClick: onEdit }, '✏️ Изменить'),
+      onDelete && React.createElement('button', { className: 'delete-btn', onClick: onDelete }, '🗑 Удалить')
+    )
   );
 }
 
-function GiftForm({ me, partner, partnerName, onClose, onSaved }) {
-  const [form, setForm] = useState({ title: '', description: '', url: '', price: '', category: '', priority: '', for_user: me });
+function GiftForm({ me, partner, partnerName, initialData, onClose, onSaved, onDelete }) {
+  const [form, setForm] = useState(initialData ? {
+    title: initialData.title || '',
+    description: initialData.description || '',
+    url: initialData.url || '',
+    price: initialData.price || '',
+    category: initialData.category || '',
+    priority: initialData.priority || '',
+    for_user: initialData.for_user || me
+  } : { title: '', description: '', url: '', price: '', category: '', priority: '', for_user: me });
+  
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState('');
 
@@ -453,9 +535,19 @@ function GiftForm({ me, partner, partnerName, onClose, onSaved }) {
     const payload = {
       title: form.title, description: form.description || null, url: form.url || null,
       price: form.price ? Number(form.price) : null, category: form.category || null,
-      priority: form.priority || null, for_user: form.for_user, created_by: me
+      priority: form.priority || null, for_user: form.for_user
     };
-    const { error } = await db.from('gifts').insert(payload);
+
+    let error;
+    if (initialData) {
+      const res = await db.from('gifts').update(payload).eq('id', initialData.id);
+      error = res.error;
+    } else {
+      payload.created_by = me;
+      const res = await db.from('gifts').insert(payload);
+      error = res.error;
+    }
+
     setBusy(false);
     if (error) { setErr(error.message); return; }
     onSaved();
@@ -463,7 +555,7 @@ function GiftForm({ me, partner, partnerName, onClose, onSaved }) {
 
   return React.createElement('div', { className: 'modal-bg', onClick: onClose },
     React.createElement('form', { className: 'modal', onClick: e => e.stopPropagation(), onSubmit: handleSubmit },
-      React.createElement('h2', null, 'Новый подарок 🎁'),
+      React.createElement('h2', null, initialData ? 'Редактировать подарок ✏️' : 'Новый подарок 🎁'),
       React.createElement('label', null, 'Кому?',
         React.createElement('select', { value: form.for_user, onChange: e => setForm({...form, for_user: e.target.value}) },
           React.createElement('option', { value: me }, 'Мне (в мой вишлист)'),
@@ -490,7 +582,12 @@ function GiftForm({ me, partner, partnerName, onClose, onSaved }) {
       React.createElement('div', { className: 'modal-actions' },
         React.createElement('button', { type: 'button', onClick: onClose }, 'Отмена'),
         React.createElement('button', { type: 'submit', disabled: busy }, busy ? '...' : 'Сохранить 💗')
-      )
+      ),
+      initialData && React.createElement('button', { 
+        type: 'button', 
+        onClick: () => { if(window.confirm('Точно удалить?')) onDelete(initialData.id); },
+        style: { marginTop: '16px', width: '100%', background: 'none', border: 'none', color: '#E62429', textDecoration: 'underline', cursor: 'pointer', fontSize: '14px' }
+      }, '🗑 Удалить этот подарок')
     )
   );
 }
