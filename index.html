@@ -3,16 +3,12 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Владик 🕷️ + Юлька Шпулька 🎀 — вишлист</title>
-
-<!-- PWA -->
-<link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#FF6B9D">
+<meta name="theme-color" content="#FF6B9D"/>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Вишлист">
-<link rel="icon" href="https://i.postimg.cc/nsKzLvcG/e68292b7dce9918224d7a43246c4f4f6-(1).jpg">
-
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="https://i.postimg.cc/MH8WXhJY/IMG-20261111-122912.jpg">
+<title>Владик 🕷️ + Юлька Шпулька 🎀 — вишлист</title>
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
@@ -30,7 +26,7 @@ html, body {
   overflow-x: hidden;
 }
 
-#root { min-height: 100vh; position: relative; padding-bottom: 80px; }
+#root { min-height: 100vh; position: relative; }
 
 .polaroid-board { position: fixed; inset: 0; pointer-events: none; z-index: 1; overflow: hidden; }
 .polaroid { position: absolute; background: white; padding: 10px 10px 35px 10px; box-shadow: 0 15px 35px rgba(0,0,0,0.15); border-radius: 4px; width: 210px; }
@@ -69,25 +65,16 @@ html, body {
 .error { color: #E62429; font-size: 14px; margin-bottom: 8px; }
 
 .app { max-width: 900px; margin: 0 auto; padding: 16px; position: relative; z-index: 10; }
-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; border-radius: 20px; backdrop-filter: blur(10px); border: 2px solid #FFD6E4; margin-bottom: 12px; flex-wrap: wrap; gap: 12px; box-shadow: 0 10px 30px rgba(255,107,157,0.1); background: rgba(255,255,255,0.9); }
+header { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; border-radius: 20px; backdrop-filter: blur(10px); border: 2px solid #FFD6E4; margin-bottom: 12px; flex-wrap: wrap; gap: 12px; box-shadow: 0 10px 30px rgba(255,107,157,0.1); }
 header h1 { font-size: 18px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .avatar { width: 44px; height: 44px; border-radius: 50%; background: white; border: 3px solid #FF6B9D; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 0 15px rgba(255,107,157,0.4); overflow: hidden; }
 .avatar img { width: 100%; height: 100%; object-fit: cover; }
 .logout { padding: 8px 14px; background: white; border: 2px solid #FFD6E4; border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: 600; color: #E62429; transition: 0.2s; }
 .logout:active { transform: scale(0.9); }
 
-/* ТАЙМЕР */
-.timer-box { text-align: center; padding: 12px 16px; background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,214,228,0.6)); border-radius: 16px; margin-bottom: 12px; border: 2px solid #FFD6E4; font-weight: bold; color: #E62429; font-size: 15px; box-shadow: 0 4px 15px rgba(255,107,157,0.1); }
-.timer-value { font-size: 22px; display: block; margin-top: 4px; }
-
-/* ТАБЫ */
-.tabs { display: flex; gap: 8px; margin-bottom: 16px; background: rgba(255,255,255,0.7); padding: 6px; border-radius: 16px; border: 2px solid #FFD6E4; }
-.tab { flex: 1; padding: 10px; background: transparent; border: none; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; color: #6a4a5a; transition: 0.2s; }
-.tab.active { background: linear-gradient(135deg, #FF6B9D, #FF8FB8); color: white; box-shadow: 0 4px 12px rgba(255,107,157,0.3); }
-
 .top-panel { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-.dates-btn { flex: 1; min-width: 200px; padding: 14px; background: rgba(255,255,255,0.9); border: 2px solid #FFD6E4; border-radius: 16px; font-size: 16px; font-weight: 700; color: #E62429; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.05); backdrop-filter: blur(5px); transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
-.dates-btn:active { transform: scale(0.95); }
+.dates-btn { flex: 1; min-width: 150px; padding: 14px; background: rgba(255,255,255,0.9); border: 2px solid #FFD6E4; border-radius: 16px; font-size: 14px; font-weight: 700; color: #E62429; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.05); backdrop-filter: blur(5px); transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.gallery-btn { flex: 1; min-width: 150px; padding: 14px; background: rgba(255,255,255,0.9); border: 2px solid #FFD6E4; border-radius: 16px; font-size: 14px; font-weight: 700; color: #9B5DE5; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.05); backdrop-filter: blur(5px); transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
 .stats-box { flex: 2; min-width: 250px; background: rgba(255,255,255,0.9); padding: 10px 16px; border-radius: 16px; border: 2px solid #FFD6E4; box-shadow: 0 4px 15px rgba(0,0,0,0.05); backdrop-filter: blur(5px); display: flex; justify-content: space-around; align-items: center; }
 .stat-item { text-align: center; }
 .stat-value { font-size: 18px; font-weight: bold; color: #E62429; }
@@ -100,7 +87,7 @@ header h1 { font-size: 18px; display: flex; align-items: center; gap: 8px; flex-
 
 .lists { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 @media (max-width: 700px) { .lists { grid-template-columns: 1fr; } }
-.column { border-radius: 20px; padding: 16px; border: 2px solid #FFD6E4; backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.08); background: rgba(255,255,255,0.85); }
+.column { border-radius: 20px; padding: 16px; border: 2px solid #FFD6E4; backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
 .column h2 { font-size: 18px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; color: #E62429; }
 .empty { color: #8a6b7a; font-size: 14px; text-align: center; padding: 20px 0; }
 
@@ -124,11 +111,8 @@ header h1 { font-size: 18px; display: flex; align-items: center; gap: 8px; flex-
 .badge.prio-nice { background: #3A86FF; }
 .badge.prio-dream { background: #FFBE0B; color: #3a2836; }
 
-.card-links { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
-.card a { color: #E62429; font-size: 13px; text-decoration: none; font-weight: bold; }
+.card a { color: #E62429; font-size: 13px; text-decoration: none; font-weight: bold; display: inline-block; margin-bottom: 10px; }
 .card a:hover { text-decoration: underline; }
-.copy-link-btn { background: #FFF0F5; border: 1px solid #FF6B9D; border-radius: 6px; padding: 4px 10px; font-size: 12px; cursor: pointer; color: #E62429; font-weight: bold; }
-.copy-link-btn:active { transform: scale(0.95); }
 
 .card-actions { display: flex; gap: 8px; margin-top: 10px; }
 .edit-btn { flex: 1; padding: 10px; background: #F0F4FF; border: 1px solid #3A86FF; color: #3A86FF; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; transition: 0.2s; }
@@ -145,8 +129,7 @@ header h1 { font-size: 18px; display: flex; align-items: center; gap: 8px; flex-
 @media (min-width: 700px) { .modal { border-radius: 24px; animation: popIn 0.3s ease-out; } }
 .modal h2 { margin-bottom: 16px; color: #E62429; text-align: center; }
 .modal label { display: block; margin-bottom: 12px; font-size: 14px; font-weight: 600; color: #6a4a5a; }
-.modal input, .modal textarea, .modal select { width: 100%; padding: 10px 12px; margin-top: 6px; border: 2px solid #FFD6E4; border-radius: 10px; font-size: 15px; background: #FFF9FB; outline: none; font-family: inherit; }
-.modal textarea { min-height: 80px; resize: vertical; }
+.modal input, .modal textarea, .modal select { width: 100%; padding: 10px 12px; margin-top: 6px; border: 2px solid #FFD6E4; border-radius: 10px; font-size: 15px; background: #FFF9FB; outline: none; }
 .modal-actions { display: flex; gap: 10px; margin-top: 16px; }
 .modal-actions button { flex: 1; padding: 12px; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; border: none; transition: 0.2s; }
 .modal-actions button[type="button"] { background: #F5E9EE; color: #6a4a5a; }
@@ -162,36 +145,10 @@ header h1 { font-size: 18px; display: flex; align-items: center; gap: 8px; flex-
 .surprise-result .icon { font-size: 50px; margin-bottom: 10px; animation: popIn 0.5s; }
 .surprise-result h3 { font-size: 22px; color: #E62429; margin-bottom: 10px; }
 
-/* КАПСУЛА */
-.capsule-item { background: linear-gradient(135deg, #FFF5F8, #FFE0EC); border: 2px solid #FFD6E4; border-radius: 16px; padding: 16px; margin-bottom: 12px; position: relative; overflow: hidden; }
-.capsule-item.locked { opacity: 0.7; }
-.capsule-item.opened { background: linear-gradient(135deg, #FFF9FB, white); }
-.capsule-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-.capsule-date { font-size: 12px; color: #8a6b7a; font-weight: 600; }
-.capsule-status { font-size: 20px; }
-.capsule-message { font-size: 15px; color: #3a2836; line-height: 1.5; white-space: pre-wrap; font-style: italic; }
-.capsule-lock-text { text-align: center; color: #E62429; font-weight: bold; font-size: 14px; margin-top: 8px; }
-
-/* ГАЛЕРЕЯ ВОСПОМИНАНИЙ */
-.memories-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
-.memory-card { background: white; border-radius: 16px; overflow: hidden; border: 2px solid #FFD6E4; box-shadow: 0 4px 15px rgba(255,107,157,0.1); transition: transform 0.2s; }
-.memory-card:hover { transform: translateY(-4px); }
-.memory-card img { width: 100%; height: 180px; object-fit: cover; }
-.memory-card-body { padding: 12px; }
-.memory-card h4 { font-size: 15px; color: #E62429; margin-bottom: 4px; }
-.memory-card p { font-size: 13px; color: #6a4a5a; }
-.memory-card .memory-date { font-size: 11px; color: #8a6b7a; margin-top: 6px; font-weight: 600; }
-
-/* ЗАГРУЗКА ФАЙЛА */
-.file-upload-area { border: 2px dashed #FFD6E4; border-radius: 12px; padding: 16px; text-align: center; background: #FFF9FB; cursor: pointer; transition: 0.2s; margin-top: 6px; }
-.file-upload-area:hover { border-color: #FF6B9D; background: #FFF5F8; }
-.file-upload-area input { display: none; }
-.file-upload-label { color: #6a4a5a; font-size: 14px; }
-.file-preview { margin-top: 10px; position: relative; }
-.file-preview img { width: 100%; max-height: 200px; object-fit: cover; border-radius: 10px; }
-.remove-file { position: absolute; top: 8px; right: 8px; background: rgba(230,36,41,0.9); color: white; border: none; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; font-size: 14px; }
-
-.uploading-indicator { color: #9B5DE5; font-size: 13px; margin-top: 8px; animation: pulse 1s infinite; }
+.gallery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
+.gallery-item { background: white; border: 2px solid #FFD6E4; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); display: flex; flex-direction: column; }
+.gallery-item img { width: 100%; height: 120px; object-fit: cover; }
+.gallery-item-title { padding: 8px; font-size: 12px; font-weight: bold; text-align: center; color: #3a2836; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
@@ -214,7 +171,6 @@ const SUPABASE_ANON_KEY = 'sb_publishable_qztayszdGjUWfJ3vdJiNLA_7yLft1vo';
 const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const CATEGORIES = { under2000: '💰 до 2000', big: '💎 крупный', handmade: '🎨 handmade', experience: '✨ впечатление', other: '🎁 прочее' };
 const PRIORITIES = { must: '🔥 очень хочу', nice: '🙂 было бы славно', dream: '🌟 мечта' };
-const PRIORITY_WEIGHT = { must: 3, dream: 2, nice: 1 };
 
 const SPIDER_AVATAR = 'https://i.postimg.cc/nsKzLvcG/e68292b7dce9918224d7a43246c4f4f6-(1).jpg';
 const KITTY_AVATAR = 'https://i.postimg.cc/94H0VxVg/04c2467f385af626b7edd1c408596c26.jpg';
@@ -276,18 +232,6 @@ function formatName(name) {
   return name;
 }
 
-function sortByPriority(arr) {
-  return [...arr].sort((a, b) => (PRIORITY_WEIGHT[b.priority] || 0) - (PRIORITY_WEIGHT[a.priority] || 0));
-}
-
-function copyToClipboard(text) {
-  navigator.clipboard.writeText(text).then(() => {
-    alert('Скопировано! 💌');
-  }).catch(() => {
-    alert('Не удалось скопировать 😔');
-  });
-}
-
 function PolaroidBoard() {
   const [offset, setOffset] = useState(0);
   useEffect(() => {
@@ -322,44 +266,6 @@ function LoadingScreen() {
   );
 }
 
-// 🆕 ЖИВОЙ ТАЙМЕР
-function RelationshipTimer() {
-  const [time, setTime] = useState({ years: 0, months: 0, days: 0, hours: 0, minutes: 0 });
-
-  useEffect(() => {
-    const calculateTime = () => {
-      const now = new Date();
-      let years = now.getFullYear() - RELATIONSHIP_START.getFullYear();
-      let months = now.getMonth() - RELATIONSHIP_START.getMonth();
-      let days = now.getDate() - RELATIONSHIP_START.getDate();
-      let hours = now.getHours() - RELATIONSHIP_START.getHours();
-      let minutes = now.getMinutes() - RELATIONSHIP_START.getMinutes();
-
-      if (minutes < 0) { minutes += 60; hours--; }
-      if (hours < 0) { hours += 24; days--; }
-      if (days < 0) { 
-        const prevMonth = new Date(now.getFullYear(), now.getMonth(), 0);
-        days += prevMonth.getDate(); 
-        months--; 
-      }
-      if (months < 0) { months += 12; years--; }
-
-      setTime({ years, months, days, hours, minutes });
-    };
-
-    calculateTime();
-    const interval = setInterval(calculateTime, 30000);
-    return () => clearInterval(interval);
-  }, []);
-
-  return React.createElement('div', { className: 'timer-box' },
-    '💕 Мы вместе уже',
-    React.createElement('span', { className: 'timer-value' }, 
-      `${time.years} г. ${time.months} мес. ${time.days} дн. ${time.hours} ч. ${time.minutes} мин.`
-    )
-  );
-}
-
 function App() {
   const [session, setSession] = useState(null);
   const [appLoading, setAppLoading] = useState(true);
@@ -373,10 +279,9 @@ function App() {
   const [randomGift, setRandomGift] = useState(null);
   
   const [showDates, setShowDates] = useState(false);
-  const [showCapsule, setShowCapsule] = useState(false);
   const [allEvents, setAllEvents] = useState([]);
-  
-  const [activeTab, setActiveTab] = useState('wishlist'); // wishlist | memories
+
+  const [showGallery, setShowGallery] = useState(false);
 
   useEffect(() => {
     db.auth.getSession().then(({ data }) => { setSession(data.session); setAppLoading(false); });
@@ -410,6 +315,7 @@ function App() {
     if (isBuying && window.confetti) {
       window.confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 }, colors: ['#FF6B9D', '#E62429', '#9B5DE5', '#FFBE0B'] });
     }
+
     await loadData();
   }
 
@@ -461,9 +367,10 @@ function App() {
     React.createElement(Login)
   );
 
-  const myWishlist = sortByPriority(gifts.filter(g => g.for_user === session.user.id));
-  const partnerWishlist = sortByPriority(gifts.filter(g => g.for_user !== session.user.id));
-  const memories = gifts.filter(g => g.is_purchased && g.image_url);
+  const myWishlist = gifts.filter(g => g.for_user === session.user.id);
+  const partnerWishlist = gifts.filter(g => g.for_user !== session.user.id);
+  
+  const galleryGifts = gifts.filter(g => g.image_url && g.image_url.trim() !== '');
 
   const myAvatar = getAvatarUrl(profile);
   const partnerAvatar = getAvatarUrl(partner);
@@ -488,112 +395,109 @@ function App() {
         React.createElement('button', { className: 'logout', onClick: () => db.auth.signOut() }, 'Выйти')
       ),
 
-      // 🆕 ТАЙМЕР
-      React.createElement(RelationshipTimer),
-
-      // 🆕 ТАБЫ
-      React.createElement('div', { className: 'tabs' },
-        React.createElement('button', { className: 'tab' + (activeTab === 'wishlist' ? ' active' : ''), onClick: () => setActiveTab('wishlist') }, '🎁 Вишлист'),
-        React.createElement('button', { className: 'tab' + (activeTab === 'memories' ? ' active' : ''), onClick: () => setActiveTab('memories') }, '📸 Воспоминания (' + memories.length + ')')
-      ),
-
-      activeTab === 'wishlist' && React.createElement(React.Fragment, null,
-        React.createElement('div', { className: 'top-panel' },
-          React.createElement('button', { className: 'dates-btn', onClick: () => setShowDates(true) }, '📅 Важные даты'),
-          React.createElement('button', { className: 'dates-btn', onClick: () => setShowCapsule(true), style: { background: 'linear-gradient(135deg, #9B5DE5, #F15BB5)', color: 'white', border: 'none' } }, '💌 Капсула времени'),
-          React.createElement('div', { className: 'stats-box' },
-            React.createElement('div', { className: 'stat-item' },
-              React.createElement('div', { className: 'stat-value' }, totalWishes),
-              React.createElement('div', { className: 'stat-label' }, 'Желаний')
-            ),
-            React.createElement('div', { className: 'stat-item' },
-              React.createElement('div', { className: 'stat-value' }, purchasedCount),
-              React.createElement('div', { className: 'stat-label' }, 'Куплено')
-            ),
-            React.createElement('div', { className: 'stat-item' },
-              React.createElement('div', { className: 'stat-value' }, totalSum + ' ₽'),
-              React.createElement('div', { className: 'stat-label' }, 'Сумма')
-            )
-          )
-        ),
-        
-        React.createElement('div', { className: 'actions-row' },
-          React.createElement('button', { className: 'add-btn', onClick: () => { setEditingGift(null); setShowForm(true); } }, '➕ Добавить подарок'),
-          React.createElement('button', { className: 'surprise-btn', onClick: handleRandomGift }, '🎲 Сюрприз')
-        ),
-
-        React.createElement('section', { className: 'lists' },
-          React.createElement('div', { className: 'column' },
-            React.createElement('h2', null, '🎁 Что я хочу'),
-            myWishlist.length === 0 && React.createElement('p', { className: 'empty' }, 'Пока пусто. Добавь мечту! 💭'),
-            myWishlist.map(g => React.createElement(GiftCard, { 
-              key: g.id, gift: g, mode: 'mine', 
-              onEdit: (g.created_by === session.user.id) ? () => handleEditClick(g) : null,
-              onDelete: (g.created_by === session.user.id) ? () => deleteGift(g.id) : null 
-            }))
+      React.createElement('div', { className: 'top-panel' },
+        React.createElement('button', { className: 'dates-btn', onClick: () => setShowDates(true) }, '📅 Даты'),
+        React.createElement('button', { className: 'gallery-btn', onClick: () => setShowGallery(true) }, '📸 Воспоминания'),
+        React.createElement('div', { className: 'stats-box' },
+          React.createElement('div', { className: 'stat-item' },
+            React.createElement('div', { className: 'stat-value' }, totalWishes),
+            React.createElement('div', { className: 'stat-label' }, 'Желаний')
           ),
-          React.createElement('div', { className: 'column' },
-            React.createElement('h2', null, '💝 Чего хочет ' + partnerName),
-            partnerWishlist.length === 0 && React.createElement('p', { className: 'empty' }, 'Пока пусто 🎀'),
-            partnerWishlist.map(g => React.createElement(GiftCard, { 
-              key: g.id, gift: g, mode: 'partner', 
-              onToggle: () => togglePurchase(g.id), 
-              onEdit: (g.created_by === session.user.id) ? () => handleEditClick(g) : null,
-              onDelete: (g.created_by === session.user.id) ? () => deleteGift(g.id) : null 
-            }))
+          React.createElement('div', { className: 'stat-item' },
+            React.createElement('div', { className: 'stat-value' }, purchasedCount),
+            React.createElement('div', { className: 'stat-label' }, 'Куплено')
+          ),
+          React.createElement('div', { className: 'stat-item' },
+            React.createElement('div', { className: 'stat-value' }, totalSum + ' ₽'),
+            React.createElement('div', { className: 'stat-label' }, 'Сумма')
+          )
+        )
+      ),
+      
+      React.createElement('div', { className: 'actions-row' },
+        React.createElement('button', { className: 'add-btn', onClick: () => { setEditingGift(null); setShowForm(true); } }, '➕ Добавить подарок'),
+        React.createElement('button', { className: 'surprise-btn', onClick: handleRandomGift }, '🎲 Подари мне сюрприз')
+      ),
+
+      showDates && React.createElement('div', { className: 'modal-bg', onClick: () => setShowDates(false) },
+        React.createElement('div', { className: 'modal', onClick: e => e.stopPropagation() },
+          React.createElement('h2', null, '📅 Важные даты'),
+          React.createElement('div', { className: 'dates-list' },
+            allEvents.map((ev, idx) => 
+              React.createElement('div', { key: idx, className: 'date-item' },
+                React.createElement('div', { className: 'date-item-title' }, ev.emoji + ' ' + ev.title),
+                React.createElement('div', { className: 'date-item-days' }, getDaysLeft(ev.date))
+              )
+            )
+          ),
+          React.createElement('div', { className: 'modal-actions' },
+            React.createElement('button', { type: 'button', onClick: () => setShowDates(false) }, 'Закрыть')
           )
         )
       ),
 
-      // 🆕 ВКЛАДКА ВОСПОМИНАНИЙ
-      activeTab === 'memories' && React.createElement(MemoriesGallery, { memories: memories, partnerName: partnerName })
-    ),
-
-    showDates && React.createElement('div', { className: 'modal-bg', onClick: () => setShowDates(false) },
-      React.createElement('div', { className: 'modal', onClick: e => e.stopPropagation() },
-        React.createElement('h2', null, '📅 Важные даты'),
-        React.createElement('div', { className: 'dates-list' },
-          allEvents.map((ev, idx) => 
-            React.createElement('div', { key: idx, className: 'date-item' },
-              React.createElement('div', { className: 'date-item-title' }, ev.emoji + ' ' + ev.title),
-              React.createElement('div', { className: 'date-item-days' }, getDaysLeft(ev.date))
+      showGallery && React.createElement('div', { className: 'modal-bg', onClick: () => setShowGallery(false) },
+        React.createElement('div', { className: 'modal', onClick: e => e.stopPropagation() },
+          React.createElement('h2', null, '📸 Наши воспоминания'),
+          galleryGifts.length === 0 ? React.createElement('p', { className: 'empty' }, 'Пока нет фото подарков 🎁') :
+          React.createElement('div', { className: 'gallery-grid' },
+            galleryGifts.map(g => 
+              React.createElement('div', { key: g.id, className: 'gallery-item' },
+                React.createElement('img', { src: g.image_url, alt: g.title }),
+                React.createElement('div', { className: 'gallery-item-title' }, g.title)
+              )
             )
+          ),
+          React.createElement('div', { className: 'modal-actions' },
+            React.createElement('button', { type: 'button', onClick: () => setShowGallery(false) }, 'Закрыть')
           )
-        ),
-        React.createElement('div', { className: 'modal-actions' },
-          React.createElement('button', { type: 'button', onClick: () => setShowDates(false) }, 'Закрыть')
         )
-      )
-    ),
+      ),
 
-    // 🆕 КАПСУЛА ВРЕМЕНИ
-    showCapsule && React.createElement(TimeCapsuleModal, { 
-      onClose: () => setShowCapsule(false),
-      userId: session.user.id,
-      myName: myName
-    }),
+      showForm && React.createElement(GiftForm, { 
+        me: session.user.id, 
+        partner: partner, 
+        partnerName: partnerName, 
+        initialData: editingGift,
+        onClose: handleCloseForm, 
+        onSaved: () => { handleCloseForm(); loadData(); },
+        onDelete: (id) => { deleteGift(id); handleCloseForm(); }
+      }),
+      
+      randomGift && React.createElement('div', { className: 'modal-bg', onClick: () => setRandomGift(null) },
+        React.createElement('div', { className: 'modal', onClick: e => e.stopPropagation() },
+          React.createElement('h2', null, '🎁 Твой сюрприз!'),
+          React.createElement('div', { className: 'surprise-result' },
+            React.createElement('div', { className: 'icon' }, '🎉'),
+            React.createElement('h3', null, randomGift.title),
+            randomGift.price != null && React.createElement('p', null, 'Цена: ' + randomGift.price + ' ₽'),
+            React.createElement('p', { style: { marginTop: '10px', color: '#666' } }, 'Это отличная идея для подарка!'),
+            React.createElement('button', { className: 'buy-btn', style: { marginTop: '20px' }, onClick: () => { togglePurchase(randomGift.id); setRandomGift(null); } }, '🛒 Я дарю это!')
+          ),
+          React.createElement('div', { className: 'modal-actions' }, React.createElement('button', { type: 'button', onClick: () => setRandomGift(null) }, 'Закрыть'))
+        )
+      ),
 
-    showForm && React.createElement(GiftForm, { 
-      me: session.user.id, 
-      partner: partner, 
-      partnerName: partnerName, 
-      initialData: editingGift,
-      onClose: handleCloseForm, 
-      onSaved: () => { handleCloseForm(); loadData(); },
-      onDelete: (id) => { deleteGift(id); handleCloseForm(); }
-    }),
-    
-    randomGift && React.createElement('div', { className: 'modal-bg', onClick: () => setRandomGift(null) },
-      React.createElement('div', { className: 'modal', onClick: e => e.stopPropagation() },
-        React.createElement('h2', null, '🎁 Твой сюрприз!'),
-        React.createElement('div', { className: 'surprise-result' },
-          React.createElement('div', { className: 'icon' }, '🎉'),
-          React.createElement('h3', null, randomGift.title),
-          randomGift.price != null && React.createElement('p', null, 'Цена: ' + randomGift.price + ' ₽'),
-          React.createElement('p', { style: { marginTop: '10px', color: '#666' } }, 'Это отличная идея для подарка!'),
-          React.createElement('button', { className: 'buy-btn', style: { marginTop: '20px' }, onClick: () => { togglePurchase(randomGift.id); setRandomGift(null); } }, '🛒 Я дарю это!')
+      React.createElement('section', { className: 'lists' },
+        React.createElement('div', { className: 'column' },
+          React.createElement('h2', null, '🎁 Что я хочу'),
+          myWishlist.length === 0 && React.createElement('p', { className: 'empty' }, 'Пока пусто. Добавь мечту! 💭'),
+          myWishlist.map(g => React.createElement(GiftCard, { 
+            key: g.id, gift: g, mode: 'mine', 
+            onEdit: (g.created_by === session.user.id) ? () => handleEditClick(g) : null,
+            onDelete: (g.created_by === session.user.id) ? () => deleteGift(g.id) : null 
+          }))
         ),
-        React.createElement('div', { className: 'modal-actions' }, React.createElement('button', { type: 'button', onClick: () => setRandomGift(null) }, 'Закрыть'))
+        React.createElement('div', { className: 'column' },
+          React.createElement('h2', null, '💝 Чего хочет ' + partnerName),
+          partnerWishlist.length === 0 && React.createElement('p', { className: 'empty' }, 'Пока пусто 🎀'),
+          partnerWishlist.map(g => React.createElement(GiftCard, { 
+            key: g.id, gift: g, mode: 'partner', 
+            onToggle: () => togglePurchase(g.id), 
+            onEdit: (g.created_by === session.user.id) ? () => handleEditClick(g) : null,
+            onDelete: (g.created_by === session.user.id) ? () => deleteGift(g.id) : null 
+          }))
+        )
       )
     )
   );
@@ -637,10 +541,7 @@ function GiftCard({ gift, mode, onToggle, onEdit, onDelete }) {
       gift.category && React.createElement('span', { className: getCatClass(gift.category) }, CATEGORIES[gift.category]),
       gift.priority && React.createElement('span', { className: getPrioClass(gift.priority) }, PRIORITIES[gift.priority])
     ),
-    gift.url && React.createElement('div', { className: 'card-links' },
-      React.createElement('a', { href: gift.url, target: '_blank', rel: 'noopener noreferrer' }, '🔗 Открыть ссылку'),
-      React.createElement('button', { className: 'copy-link-btn', onClick: () => copyToClipboard(gift.url + ' — ' + gift.title) }, '📋 Копировать')
-    ),
+    gift.url && React.createElement('a', { href: gift.url, target: '_blank', rel: 'noopener noreferrer' }, 'Открыть ссылку →'),
     
     mode === 'partner' && onToggle && React.createElement('button', { className: 'buy-btn', onClick: onToggle }, gift.is_purchased ? '✅ Куплено (отменить?)' : '🛒 Отметить купленным'),
     
@@ -651,7 +552,6 @@ function GiftCard({ gift, mode, onToggle, onEdit, onDelete }) {
   );
 }
 
-// 🆕 ОБНОВЛЁННАЯ ФОРМА С ЗАГРУЗКОЙ ФОТО
 function GiftForm({ me, partner, partnerName, initialData, onClose, onSaved, onDelete }) {
   const [form, setForm] = useState(initialData ? {
     title: initialData.title || '',
@@ -664,68 +564,35 @@ function GiftForm({ me, partner, partnerName, initialData, onClose, onSaved, onD
     image_url: initialData.image_url || ''
   } : { title: '', description: '', url: '', price: '', category: '', priority: '', for_user: me, image_url: '' });
   
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState(initialData?.image_url || '');
-  const [isUploading, setIsUploading] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [err, setErr] = useState('');
 
-  function handleFileSelect(e) {
+  async function handleFileChange(e) {
     const file = e.target.files[0];
     if (!file) return;
-    if (file.size > 5 * 1024 * 1024) {
-      setErr('Файл слишком большой (макс. 5 МБ)');
+    setUploading(true);
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+    
+    const { error: uploadError } = await db.storage.from('gift-photos').upload(fileName, file);
+    if (uploadError) {
+      alert('Ошибка загрузки фото: ' + uploadError.message);
+      setUploading(false);
       return;
     }
-    setSelectedFile(file);
-    setPreviewUrl(URL.createObjectURL(file));
-    setErr('');
-  }
-
-  function removeFile() {
-    setSelectedFile(null);
-    setPreviewUrl('');
-    setForm({ ...form, image_url: '' });
+    
+    const { data } = db.storage.from('gift-photos').getPublicUrl(fileName);
+    setForm({ ...form, image_url: data.publicUrl });
+    setUploading(false);
   }
 
   async function handleSubmit(e) {
-    e.preventDefault(); 
-    setBusy(true); 
-    setErr('');
-    
-    let finalImageUrl = form.image_url;
-
-    if (selectedFile) {
-      setIsUploading(true);
-      const fileExt = selectedFile.name.split('.').pop();
-      const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
-      const filePath = `gifts/${fileName}`;
-
-      const { error: uploadError } = await db.storage
-        .from('gift-photos')
-        .upload(filePath, selectedFile);
-
-      if (uploadError) {
-        setErr('Ошибка загрузки фото: ' + uploadError.message);
-        setBusy(false);
-        setIsUploading(false);
-        return;
-      }
-
-      const { data: { publicUrl } } = db.storage.from('gift-photos').getPublicUrl(filePath);
-      finalImageUrl = publicUrl;
-      setIsUploading(false);
-    }
-
+    e.preventDefault(); setBusy(true); setErr('');
     const payload = {
-      title: form.title, 
-      description: form.description || null, 
-      url: form.url || null,
-      price: form.price ? Number(form.price) : null, 
-      category: form.category || null,
-      priority: form.priority || null, 
-      for_user: form.for_user,
-      image_url: finalImageUrl || null
+      title: form.title, description: form.description || null, url: form.url || null,
+      price: form.price ? Number(form.price) : null, category: form.category || null,
+      priority: form.priority || null, for_user: form.for_user, image_url: form.image_url || null
     };
 
     let error;
@@ -756,6 +623,13 @@ function GiftForm({ me, partner, partnerName, initialData, onClose, onSaved, onD
       React.createElement('label', null, 'Описание', React.createElement('textarea', { value: form.description, onChange: e => setForm({...form, description: e.target.value}) })),
       React.createElement('label', null, 'Ссылка на товар', React.createElement('input', { type: 'url', value: form.url, onChange: e => setForm({...form, url: e.target.value}), placeholder: 'https://...' })),
       React.createElement('label', null, 'Цена, ₽', React.createElement('input', { type: 'number', value: form.price, onChange: e => setForm({...form, price: e.target.value}) })),
+      
+      React.createElement('label', null, 'Фото подарка или момента',
+        React.createElement('input', { type: 'file', accept: 'image/*', onChange: handleFileChange, disabled: uploading }),
+        uploading && React.createElement('span', { style: { fontSize: '12px', color: '#E62429' } }, 'Загрузка...'),
+        form.image_url && React.createElement('img', { src: form.image_url, alt: 'preview', style: { width: '80px', height: '80px', objectFit: 'cover', borderRadius: '8px', marginTop: '8px', border: '2px solid #FFD6E4' } })
+      ),
+
       React.createElement('label', null, 'Категория',
         React.createElement('select', { value: form.category, onChange: e => setForm({...form, category: e.target.value}) },
           React.createElement('option', { value: '' }, '— Выбери —'),
@@ -768,176 +642,21 @@ function GiftForm({ me, partner, partnerName, initialData, onClose, onSaved, onD
           Object.entries(PRIORITIES).map(([k,v]) => React.createElement('option', { key: k, value: k }, v))
         )
       ),
-      // 🆕 ЗАГРУЗКА ФОТО
-      React.createElement('label', null, 'Фото подарка',
-        !previewUrl && React.createElement('label', { className: 'file-upload-area' },
-          React.createElement('input', { type: 'file', accept: 'image/*', onChange: handleFileSelect }),
-          React.createElement('div', { className: 'file-upload-label' }, '📷 Нажми, чтобы выбрать фото (до 5 МБ)')
-        ),
-        previewUrl && React.createElement('div', { className: 'file-preview' },
-          React.createElement('img', { src: previewUrl, alt: 'preview' }),
-          React.createElement('button', { type: 'button', className: 'remove-file', onClick: removeFile }, '✕')
-        ),
-        isUploading && React.createElement('div', { className: 'uploading-indicator' }, '⏳ Загружаю фото...')
-      ),
       err && React.createElement('p', { className: 'error' }, err),
       React.createElement('div', { className: 'modal-actions' },
         React.createElement('button', { type: 'button', onClick: onClose }, 'Отмена'),
-        React.createElement('button', { type: 'submit', disabled: busy || isUploading }, busy || isUploading ? '...' : 'Сохранить 💗')
+        React.createElement('button', { type: 'submit', disabled: busy || uploading }, busy ? '...' : 'Сохранить 💗')
       ),
       initialData && React.createElement('button', { 
         type: 'button', 
         onClick: () => { if(window.confirm('Точно удалить?')) onDelete(initialData.id); },
-        style: { marginTop: '16px', width: '100%', background: 'none', border: 'none', color: '#E62429', textDecoration: 'underline', cursor: 'pointer', fontSize: '14px', padding: '8px' }
+        style: { marginTop: '16px', width: '100%', background: 'none', border: 'none', color: '#E62429', textDecoration: 'underline', cursor: 'pointer', fontSize: '14px' }
       }, '🗑 Удалить этот подарок')
     )
   );
 }
 
-// 🆕 КАПСУЛА ВРЕМЕНИ
-function TimeCapsuleModal({ onClose, userId, myName }) {
-  const [capsules, setCapsules] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [showNew, setShowNew] = useState(false);
-  const [message, setMessage] = useState('');
-  const [unlockDate, setUnlockDate] = useState('');
-  const [saving, setSaving] = useState(false);
-  const [err, setErr] = useState('');
-
-  useEffect(() => { loadCapsules(); }, []);
-
-  async function loadCapsules() {
-    setLoading(true);
-    const { data, error } = await db.from('time_capsules').select('*').order('unlock_date', { ascending: true });
-    if (!error && data) setCapsules(data);
-    setLoading(false);
-  }
-
-  async function handleSave(e) {
-    e.preventDefault();
-    if (!message.trim() || !unlockDate) { setErr('Заполни все поля'); return; }
-    setSaving(true); setErr('');
-    const { error } = await db.from('time_capsules').insert({
-      created_by: userId,
-      message: message.trim(),
-      unlock_date: unlockDate
-    });
-    setSaving(false);
-    if (error) { setErr(error.message); return; }
-    setMessage(''); setUnlockDate(''); setShowNew(false);
-    await loadCapsules();
-  }
-
-  function formatDate(dateStr) {
-    const d = new Date(dateStr);
-    return d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
-  }
-
-  function getDaysUntil(dateStr) {
-    const now = new Date(); now.setHours(0,0,0,0);
-    const target = new Date(dateStr); target.setHours(0,0,0,0);
-    const diff = Math.ceil((target - now) / (1000 * 60 * 60 * 24));
-    return diff;
-  }
-
-  const today = new Date().toISOString().split('T')[0];
-
-  return React.createElement('div', { className: 'modal-bg', onClick: onClose },
-    React.createElement('div', { className: 'modal', onClick: e => e.stopPropagation() },
-      React.createElement('h2', null, '💌 Капсула времени'),
-      React.createElement('p', { style: { textAlign: 'center', color: '#6a4a5a', fontSize: '14px', marginBottom: '16px' } }, 
-        'Запечатай послание, которое откроется в нужный момент 🔮'),
-      
-      !showNew && React.createElement('button', { 
-        className: 'add-btn', 
-        style: { marginBottom: '16px', animation: 'none' },
-        onClick: () => setShowNew(true) 
-      }, '✍️ Написать новое послание'),
-
-      showNew && React.createElement('form', { onSubmit: handleSave, style: { marginBottom: '16px', padding: '16px', background: '#FFF9FB', borderRadius: '12px', border: '2px solid #FFD6E4' } },
-        React.createElement('h3', { style: { color: '#E62429', marginBottom: '12px', fontSize: '16px' } }, 'Новое послание от ' + myName),
-        React.createElement('textarea', { 
-          value: message, 
-          onChange: e => setMessage(e.target.value),
-          placeholder: 'Мое любимое, в этой капсуле я хочу сказать тебе...',
-          style: { width: '100%', padding: '10px', border: '2px solid #FFD6E4', borderRadius: '10px', minHeight: '100px', marginBottom: '10px', fontFamily: 'inherit', fontSize: '14px' }
-        }),
-        React.createElement('label', { style: { display: 'block', fontSize: '14px', color: '#6a4a5a', fontWeight: '600', marginBottom: '10px' } }, 
-          'Когда вскрыть?',
-          React.createElement('input', { 
-            type: 'date', 
-            value: unlockDate,
-            min: today,
-            onChange: e => setUnlockDate(e.target.value),
-            style: { width: '100%', padding: '10px', border: '2px solid #FFD6E4', borderRadius: '10px', marginTop: '6px' }
-          })
-        ),
-        err && React.createElement('p', { className: 'error' }, err),
-        React.createElement('div', { style: { display: 'flex', gap: '8px' } },
-          React.createElement('button', { type: 'button', onClick: () => { setShowNew(false); setMessage(''); setUnlockDate(''); setErr(''); }, style: { flex: 1, padding: '10px', background: '#F5E9EE', border: 'none', borderRadius: '10px', cursor: 'pointer', fontWeight: '600' } }, 'Отмена'),
-          React.createElement('button', { type: 'submit', disabled: saving, style: { flex: 1, padding: '10px', background: 'linear-gradient(135deg, #9B5DE5, #F15BB5)', color: 'white', border: 'none', borderRadius: '10px', cursor: 'pointer', fontWeight: '600' } }, saving ? '...' : '🔒 Запечатать')
-        )
-      ),
-
-      loading ? React.createElement('p', { style: { textAlign: 'center', color: '#6a4a5a' } }, 'Загрузка...') :
-      capsules.length === 0 ? React.createElement('p', { style: { textAlign: 'center', color: '#6a4a5a', padding: '20px 0' } }, 'Пока нет капсул 📭') :
-      React.createElement('div', { className: 'dates-list' },
-        capsules.map(c => {
-          const daysLeft = getDaysUntil(c.unlock_date);
-          const isOpen = daysLeft <= 0;
-          return React.createElement('div', { key: c.id, className: 'capsule-item ' + (isOpen ? 'opened' : 'locked') },
-            React.createElement('div', { className: 'capsule-header' },
-              React.createElement('div', { className: 'capsule-date' }, isOpen ? '✨ Открыта ' + formatDate(c.unlock_date) : '🔒 Откроется ' + formatDate(c.unlock_date)),
-              React.createElement('div', { className: 'capsule-status' }, isOpen ? '📖' : '🔒')
-            ),
-            isOpen ? React.createElement('div', { className: 'capsule-message' }, '«' + c.message + '»') :
-              React.createElement('div', { className: 'capsule-lock-text' }, 
-                daysLeft === 0 ? 'Откроется сегодня!' : 'Осталось ' + daysLeft + ' дн.'
-              )
-          );
-        })
-      ),
-
-      React.createElement('div', { className: 'modal-actions' },
-        React.createElement('button', { type: 'button', onClick: onClose }, 'Закрыть')
-      )
-    )
-  );
-}
-
-// 🆕 ГАЛЕРЕЯ ВОСПОМИНАНИЙ
-function MemoriesGallery({ memories, partnerName }) {
-  if (memories.length === 0) {
-    return React.createElement('div', { className: 'column', style: { textAlign: 'center', padding: '40px 20px' } },
-      React.createElement('div', { style: { fontSize: '60px', marginBottom: '16px' } }, '📸'),
-      React.createElement('h2', { style: { justifyContent: 'center', marginBottom: '8px' } }, 'Пока нет воспоминаний'),
-      React.createElement('p', { style: { color: '#6a4a5a' } }, 'Когда вы подарите подарок с фото, он появится здесь ✨')
-    );
-  }
-
-  return React.createElement('div', null,
-    React.createElement('h2', { style: { color: '#E62429', marginBottom: '16px', fontSize: '20px' } }, '📸 Наши воспоминания'),
-    React.createElement('div', { className: 'memories-grid' },
-      memories.map(g => React.createElement('div', { key: g.id, className: 'memory-card' },
-        React.createElement('img', { src: g.image_url, alt: g.title }),
-        React.createElement('div', { className: 'memory-card-body' },
-          React.createElement('h4', null, g.title),
-          g.description && React.createElement('p', null, g.description),
-          React.createElement('div', { className: 'memory-date' }, '💝 Подарок для ' + (g.for_user_name || 'любимого человека'))
-        )
-      ))
-    )
-  );
-}
-
 ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(App));
-
-// 🆕 Service Worker для PWA
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW registration failed:', err));
-  });
-}
 </script>
 </body>
 </html>
