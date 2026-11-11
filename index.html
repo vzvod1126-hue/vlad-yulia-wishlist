@@ -376,4 +376,568 @@ function App() {
   const [showCapsule, setShowCapsule] = useState(false);
   const [allEvents, setAllEvents] = useState([]);
   
-  const [activeTab, setActiveTab]
+  const [activeTab, setActiveTab] = useState('wishlist'); // wishlist | memories
+
+  useEffect(() => {
+    db.auth.getSession().then(({ data }) => { setSession(data.session); setAppLoading(false); });
+    const { data: sub } = db.auth.onAuthStateChange((_e, s) => setSession(s));
+    return () => sub.subscription.unsubscribe();
+  }, []);
+
+  useEffect(() => { if (session) loadData(); else setDataLoading(false); }, [session]);
+
+  async function loadData() {
+    setDataLoading(true);
+    const me = session.user.id;
+    const { data: profiles } = await db.from('profiles').select('*');
+    setProfile(profiles?.find(p => p.id === me) || null);
+    setPartner(profiles?.find(p => p.id !== me) || null);
+    
+    const { data: g, error } = await db.rpc('get_gifts');
+    if (!error) setGifts(g || []);
+
+    setAllEvents(getAllEvents());
+    setDataLoading(false);
+  }
+
+  async function togglePurchase(giftId) {
+    const gift = gifts.find(g => g.id === giftId);
+    const isBuying = gift && !gift.is_purchased;
+
+    const { error } = await db.rpc('toggle_purchase', { gift_id: giftId });
+    if (error) { alert('Ошибка: ' + error.message); return; }
+    
+    if (isBuying && window.confetti) {
+      window.confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 }, colors: ['#FF6B9D', '#E62429', '#9B5DE5', '#FFBE0B'] });
+    }
+    await loadData();
+  }
+
+  async function deleteGift(giftId) {
+    const { error } = await db.rpc('delete_gift', { gift_id: giftId });
+    if (error) { alert('Ошибка удаления: ' + error.message); return; }
+    await loadData();
+  }
+
+  function getAvatarUrl(p) {
+    if (!p) return null;
+    if (p.name.toLowerCase().includes('влад') || p.theme === 'spiderman') return SPIDER_AVATAR;
+    if (p.name.toLowerCase().includes('юл') || p.theme === 'hellokitty') return KITTY_AVATAR;
+    return null;
+  }
+
+  function handleRandomGift() {
+    const available = gifts.filter(g => g.for_user !== session.user.id && !g.is_purchased);
+    if (available.length === 0) { alert('В списке партнёра пока нет некупленных подарков!'); return; }
+    const mustHaves = available.filter(g => g.priority === 'must');
+    const pool = mustHaves.length > 0 ? mustHaves : available;
+    setRandomGift(pool[Math.floor(Math.random() * pool.length)]);
+  }
+
+  function handleEditClick(gift) {
+    setEditingGift(gift);
+    setShowForm(true);
+  }
+
+  function handleCloseForm() {
+    setShowForm(false);
+    setEditingGift(null);
+  }
+
+  function getDaysLeft(dateObj) {
+    const now = new Date();
+    now.setHours(0,0,0,0);
+    const diffTime = dateObj - now;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    if (diffDays === 0) return 'Сегодня! 🎉';
+    if (diffDays === 1) return 'Завтра! 🎈';
+    return diffDays + ' дн.';
+  }
+
+  if (appLoading || dataLoading) return React.createElement(LoadingScreen);
+
+  if (!session) return React.createElement(React.Fragment, null,
+    React.createElement(PolaroidBoard),
+    React.createElement(Login)
+  );
+
+  const myWishlist = sortByPriority(gifts.filter(g => g.for_user === session.user.id));
+  const partnerWishlist = sortByPriority(gifts.filter(g => g.for_user !== session.user.id));
+  const memories = gifts.filter(g => g.is_purchased && g.image_url);
+
+  const myAvatar = getAvatarUrl(profile);
+  const partnerAvatar = getAvatarUrl(partner);
+  const myName = formatName(profile?.name) || 'Я';
+  const partnerName = formatName(partner?.name) || 'Партнёр';
+
+  const totalWishes = gifts.length;
+  const purchasedCount = gifts.filter(g => g.is_purchased).length;
+  const totalSum = gifts.reduce((acc, curr) => acc + (curr.price || 0), 0);
+
+  return React.createElement(React.Fragment, null,
+    React.createElement(PolaroidBoard),
+    React.createElement('div', { className: 'app' },
+      React.createElement('header', null,
+        React.createElement('h1', null, 
+          React.createElement('div', { className: 'avatar' }, myAvatar ? React.createElement('img', { src: myAvatar, alt: 'me' }) : (profile?.emoji || '💗')),
+          React.createElement('span', null, myName),
+          React.createElement('span', null, '+'),
+          React.createElement('div', { className: 'avatar' }, partnerAvatar ? React.createElement('img', { src: partnerAvatar, alt: 'partner' }) : (partner?.emoji || '💗')),
+          React.createElement('span', null, partnerName)
+        ),
+        React.createElement('button', { className: 'logout', onClick: () => db.auth.signOut() }, 'Выйти')
+      ),
+
+      // 🆕 ТАЙМЕР
+      React.createElement(RelationshipTimer),
+
+      // 🆕 ТАБЫ
+      React.createElement('div', { className: 'tabs' },
+        React.createElement('button', { className: 'tab' + (activeTab === 'wishlist' ? ' active' : ''), onClick: () => setActiveTab('wishlist') }, '🎁 Вишлист'),
+        React.createElement('button', { className: 'tab' + (activeTab === 'memories' ? ' active' : ''), onClick: () => setActiveTab('memories') }, '📸 Воспоминания (' + memories.length + ')')
+      ),
+
+      activeTab === 'wishlist' && React.createElement(React.Fragment, null,
+        React.createElement('div', { className: 'top-panel' },
+          React.createElement('button', { className: 'dates-btn', onClick: () => setShowDates(true) }, '📅 Важные даты'),
+          React.createElement('button', { className: 'dates-btn', onClick: () => setShowCapsule(true), style: { background: 'linear-gradient(135deg, #9B5DE5, #F15BB5)', color: 'white', border: 'none' } }, '💌 Капсула времени'),
+          React.createElement('div', { className: 'stats-box' },
+            React.createElement('div', { className: 'stat-item' },
+              React.createElement('div', { className: 'stat-value' }, totalWishes),
+              React.createElement('div', { className: 'stat-label' }, 'Желаний')
+            ),
+            React.createElement('div', { className: 'stat-item' },
+              React.createElement('div', { className: 'stat-value' }, purchasedCount),
+              React.createElement('div', { className: 'stat-label' }, 'Куплено')
+            ),
+            React.createElement('div', { className: 'stat-item' },
+              React.createElement('div', { className: 'stat-value' }, totalSum + ' ₽'),
+              React.createElement('div', { className: 'stat-label' }, 'Сумма')
+            )
+          )
+        ),
+        
+        React.createElement('div', { className: 'actions-row' },
+          React.createElement('button', { className: 'add-btn', onClick: () => { setEditingGift(null); setShowForm(true); } }, '➕ Добавить подарок'),
+          React.createElement('button', { className: 'surprise-btn', onClick: handleRandomGift }, '🎲 Сюрприз')
+        ),
+
+        React.createElement('section', { className: 'lists' },
+          React.createElement('div', { className: 'column' },
+            React.createElement('h2', null, '🎁 Что я хочу'),
+            myWishlist.length === 0 && React.createElement('p', { className: 'empty' }, 'Пока пусто. Добавь мечту! 💭'),
+            myWishlist.map(g => React.createElement(GiftCard, { 
+              key: g.id, gift: g, mode: 'mine', 
+              onEdit: (g.created_by === session.user.id) ? () => handleEditClick(g) : null,
+              onDelete: (g.created_by === session.user.id) ? () => deleteGift(g.id) : null 
+            }))
+          ),
+          React.createElement('div', { className: 'column' },
+            React.createElement('h2', null, '💝 Чего хочет ' + partnerName),
+            partnerWishlist.length === 0 && React.createElement('p', { className: 'empty' }, 'Пока пусто 🎀'),
+            partnerWishlist.map(g => React.createElement(GiftCard, { 
+              key: g.id, gift: g, mode: 'partner', 
+              onToggle: () => togglePurchase(g.id), 
+              onEdit: (g.created_by === session.user.id) ? () => handleEditClick(g) : null,
+              onDelete: (g.created_by === session.user.id) ? () => deleteGift(g.id) : null 
+            }))
+          )
+        )
+      ),
+
+      // 🆕 ВКЛАДКА ВОСПОМИНАНИЙ
+      activeTab === 'memories' && React.createElement(MemoriesGallery, { memories: memories, partnerName: partnerName })
+    ),
+
+    showDates && React.createElement('div', { className: 'modal-bg', onClick: () => setShowDates(false) },
+      React.createElement('div', { className: 'modal', onClick: e => e.stopPropagation() },
+        React.createElement('h2', null, '📅 Важные даты'),
+        React.createElement('div', { className: 'dates-list' },
+          allEvents.map((ev, idx) => 
+            React.createElement('div', { key: idx, className: 'date-item' },
+              React.createElement('div', { className: 'date-item-title' }, ev.emoji + ' ' + ev.title),
+              React.createElement('div', { className: 'date-item-days' }, getDaysLeft(ev.date))
+            )
+          )
+        ),
+        React.createElement('div', { className: 'modal-actions' },
+          React.createElement('button', { type: 'button', onClick: () => setShowDates(false) }, 'Закрыть')
+        )
+      )
+    ),
+
+    // 🆕 КАПСУЛА ВРЕМЕНИ
+    showCapsule && React.createElement(TimeCapsuleModal, { 
+      onClose: () => setShowCapsule(false),
+      userId: session.user.id,
+      myName: myName
+    }),
+
+    showForm && React.createElement(GiftForm, { 
+      me: session.user.id, 
+      partner: partner, 
+      partnerName: partnerName, 
+      initialData: editingGift,
+      onClose: handleCloseForm, 
+      onSaved: () => { handleCloseForm(); loadData(); },
+      onDelete: (id) => { deleteGift(id); handleCloseForm(); }
+    }),
+    
+    randomGift && React.createElement('div', { className: 'modal-bg', onClick: () => setRandomGift(null) },
+      React.createElement('div', { className: 'modal', onClick: e => e.stopPropagation() },
+        React.createElement('h2', null, '🎁 Твой сюрприз!'),
+        React.createElement('div', { className: 'surprise-result' },
+          React.createElement('div', { className: 'icon' }, '🎉'),
+          React.createElement('h3', null, randomGift.title),
+          randomGift.price != null && React.createElement('p', null, 'Цена: ' + randomGift.price + ' ₽'),
+          React.createElement('p', { style: { marginTop: '10px', color: '#666' } }, 'Это отличная идея для подарка!'),
+          React.createElement('button', { className: 'buy-btn', style: { marginTop: '20px' }, onClick: () => { togglePurchase(randomGift.id); setRandomGift(null); } }, '🛒 Я дарю это!')
+        ),
+        React.createElement('div', { className: 'modal-actions' }, React.createElement('button', { type: 'button', onClick: () => setRandomGift(null) }, 'Закрыть'))
+      )
+    )
+  );
+}
+
+function Login() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [busy, setBusy] = useState(false);
+
+  async function handleLogin(e) {
+    e.preventDefault(); setBusy(true); setError('');
+    const { error } = await db.auth.signInWithPassword({ email, password });
+    if (error) setError(error.message);
+    setBusy(false);
+  }
+
+  return React.createElement('div', { className: 'center' },
+    React.createElement('form', { className: 'login-form', onSubmit: handleLogin },
+      React.createElement('h1', null, '🕷️ Владик + Юлька Шпулька 🎀'),
+      React.createElement('p', { className: 'subtitle' }, 'Наш семейный вишлист'),
+      React.createElement('input', { type: 'email', placeholder: 'email', value: email, onChange: e => setEmail(e.target.value), required: true }),
+      React.createElement('input', { type: 'password', placeholder: 'пароль', value: password, onChange: e => setPassword(e.target.value), required: true }),
+      error && React.createElement('p', { className: 'error' }, error),
+      React.createElement('button', { type: 'submit', disabled: busy }, busy ? '...' : 'Войти 💗')
+    )
+  );
+}
+
+function GiftCard({ gift, mode, onToggle, onEdit, onDelete }) {
+  const getCatClass = (cat) => 'badge cat-' + (cat || 'other');
+  const getPrioClass = (prio) => 'badge prio-' + (prio || 'nice');
+
+  return React.createElement('div', { className: 'card ' + (gift.is_purchased ? 'purchased' : '') },
+    gift.image_url && React.createElement('img', { src: gift.image_url, alt: gift.title }),
+    React.createElement('h3', null, gift.title),
+    gift.description && React.createElement('p', null, gift.description),
+    React.createElement('div', { className: 'meta' },
+      gift.price != null && React.createElement('span', { className: 'badge price' }, gift.price + ' ₽'),
+      gift.category && React.createElement('span', { className: getCatClass(gift.category) }, CATEGORIES[gift.category]),
+      gift.priority && React.createElement('span', { className: getPrioClass(gift.priority) }, PRIORITIES[gift.priority])
+    ),
+    gift.url && React.createElement('div', { className: 'card-links' },
+      React.createElement('a', { href: gift.url, target: '_blank', rel: 'noopener noreferrer' }, '🔗 Открыть ссылку'),
+      React.createElement('button', { className: 'copy-link-btn', onClick: () => copyToClipboard(gift.url + ' — ' + gift.title) }, '📋 Копировать')
+    ),
+    
+    mode === 'partner' && onToggle && React.createElement('button', { className: 'buy-btn', onClick: onToggle }, gift.is_purchased ? '✅ Куплено (отменить?)' : '🛒 Отметить купленным'),
+    
+    (onEdit || onDelete) && React.createElement('div', { className: 'card-actions' },
+      onEdit && React.createElement('button', { className: 'edit-btn', onClick: onEdit }, '✏️ Изменить'),
+      onDelete && React.createElement('button', { className: 'delete-btn', onClick: onDelete }, '🗑 Удалить')
+    )
+  );
+}
+
+// 🆕 ОБНОВЛЁННАЯ ФОРМА С ЗАГРУЗКОЙ ФОТО
+function GiftForm({ me, partner, partnerName, initialData, onClose, onSaved, onDelete }) {
+  const [form, setForm] = useState(initialData ? {
+    title: initialData.title || '',
+    description: initialData.description || '',
+    url: initialData.url || '',
+    price: initialData.price || '',
+    category: initialData.category || '',
+    priority: initialData.priority || '',
+    for_user: initialData.for_user || me,
+    image_url: initialData.image_url || ''
+  } : { title: '', description: '', url: '', price: '', category: '', priority: '', for_user: me, image_url: '' });
+  
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(initialData?.image_url || '');
+  const [isUploading, setIsUploading] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState('');
+
+  function handleFileSelect(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      setErr('Файл слишком большой (макс. 5 МБ)');
+      return;
+    }
+    setSelectedFile(file);
+    setPreviewUrl(URL.createObjectURL(file));
+    setErr('');
+  }
+
+  function removeFile() {
+    setSelectedFile(null);
+    setPreviewUrl('');
+    setForm({ ...form, image_url: '' });
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault(); 
+    setBusy(true); 
+    setErr('');
+    
+    let finalImageUrl = form.image_url;
+
+    if (selectedFile) {
+      setIsUploading(true);
+      const fileExt = selectedFile.name.split('.').pop();
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+      const filePath = `gifts/${fileName}`;
+
+      const { error: uploadError } = await db.storage
+        .from('gift-photos')
+        .upload(filePath, selectedFile);
+
+      if (uploadError) {
+        setErr('Ошибка загрузки фото: ' + uploadError.message);
+        setBusy(false);
+        setIsUploading(false);
+        return;
+      }
+
+      const { data: { publicUrl } } = db.storage.from('gift-photos').getPublicUrl(filePath);
+      finalImageUrl = publicUrl;
+      setIsUploading(false);
+    }
+
+    const payload = {
+      title: form.title, 
+      description: form.description || null, 
+      url: form.url || null,
+      price: form.price ? Number(form.price) : null, 
+      category: form.category || null,
+      priority: form.priority || null, 
+      for_user: form.for_user,
+      image_url: finalImageUrl || null
+    };
+
+    let error;
+    if (initialData) {
+      const res = await db.from('gifts').update(payload).eq('id', initialData.id).select();
+      error = res.error;
+    } else {
+      payload.created_by = me;
+      const res = await db.from('gifts').insert(payload).select();
+      error = res.error;
+    }
+
+    setBusy(false);
+    if (error) { setErr(error.message); return; }
+    onSaved();
+  }
+
+  return React.createElement('div', { className: 'modal-bg', onClick: onClose },
+    React.createElement('form', { className: 'modal', onClick: e => e.stopPropagation(), onSubmit: handleSubmit },
+      React.createElement('h2', null, initialData ? 'Редактировать подарок ✏️' : 'Новый подарок 🎁'),
+      React.createElement('label', null, 'Кому?',
+        React.createElement('select', { value: form.for_user, onChange: e => setForm({...form, for_user: e.target.value}) },
+          React.createElement('option', { value: me }, 'Мне (в мой вишлист)'),
+          partner && React.createElement('option', { value: partner.id }, partner.emoji + ' ' + partnerName)
+        )
+      ),
+      React.createElement('label', null, 'Название*', React.createElement('input', { required: true, value: form.title, onChange: e => setForm({...form, title: e.target.value}) })),
+      React.createElement('label', null, 'Описание', React.createElement('textarea', { value: form.description, onChange: e => setForm({...form, description: e.target.value}) })),
+      React.createElement('label', null, 'Ссылка на товар', React.createElement('input', { type: 'url', value: form.url, onChange: e => setForm({...form, url: e.target.value}), placeholder: 'https://...' })),
+      React.createElement('label', null, 'Цена, ₽', React.createElement('input', { type: 'number', value: form.price, onChange: e => setForm({...form, price: e.target.value}) })),
+      React.createElement('label', null, 'Категория',
+        React.createElement('select', { value: form.category, onChange: e => setForm({...form, category: e.target.value}) },
+          React.createElement('option', { value: '' }, '— Выбери —'),
+          Object.entries(CATEGORIES).map(([k,v]) => React.createElement('option', { key: k, value: k }, v))
+        )
+      ),
+      React.createElement('label', null, 'Приоритет',
+        React.createElement('select', { value: form.priority, onChange: e => setForm({...form, priority: e.target.value}) },
+          React.createElement('option', { value: '' }, '— Выбери —'),
+          Object.entries(PRIORITIES).map(([k,v]) => React.createElement('option', { key: k, value: k }, v))
+        )
+      ),
+      // 🆕 ЗАГРУЗКА ФОТО
+      React.createElement('label', null, 'Фото подарка',
+        !previewUrl && React.createElement('label', { className: 'file-upload-area' },
+          React.createElement('input', { type: 'file', accept: 'image/*', onChange: handleFileSelect }),
+          React.createElement('div', { className: 'file-upload-label' }, '📷 Нажми, чтобы выбрать фото (до 5 МБ)')
+        ),
+        previewUrl && React.createElement('div', { className: 'file-preview' },
+          React.createElement('img', { src: previewUrl, alt: 'preview' }),
+          React.createElement('button', { type: 'button', className: 'remove-file', onClick: removeFile }, '✕')
+        ),
+        isUploading && React.createElement('div', { className: 'uploading-indicator' }, '⏳ Загружаю фото...')
+      ),
+      err && React.createElement('p', { className: 'error' }, err),
+      React.createElement('div', { className: 'modal-actions' },
+        React.createElement('button', { type: 'button', onClick: onClose }, 'Отмена'),
+        React.createElement('button', { type: 'submit', disabled: busy || isUploading }, busy || isUploading ? '...' : 'Сохранить 💗')
+      ),
+      initialData && React.createElement('button', { 
+        type: 'button', 
+        onClick: () => { if(window.confirm('Точно удалить?')) onDelete(initialData.id); },
+        style: { marginTop: '16px', width: '100%', background: 'none', border: 'none', color: '#E62429', textDecoration: 'underline', cursor: 'pointer', fontSize: '14px', padding: '8px' }
+      }, '🗑 Удалить этот подарок')
+    )
+  );
+}
+
+// 🆕 КАПСУЛА ВРЕМЕНИ
+function TimeCapsuleModal({ onClose, userId, myName }) {
+  const [capsules, setCapsules] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [showNew, setShowNew] = useState(false);
+  const [message, setMessage] = useState('');
+  const [unlockDate, setUnlockDate] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [err, setErr] = useState('');
+
+  useEffect(() => { loadCapsules(); }, []);
+
+  async function loadCapsules() {
+    setLoading(true);
+    const { data, error } = await db.from('time_capsules').select('*').order('unlock_date', { ascending: true });
+    if (!error && data) setCapsules(data);
+    setLoading(false);
+  }
+
+  async function handleSave(e) {
+    e.preventDefault();
+    if (!message.trim() || !unlockDate) { setErr('Заполни все поля'); return; }
+    setSaving(true); setErr('');
+    const { error } = await db.from('time_capsules').insert({
+      created_by: userId,
+      message: message.trim(),
+      unlock_date: unlockDate
+    });
+    setSaving(false);
+    if (error) { setErr(error.message); return; }
+    setMessage(''); setUnlockDate(''); setShowNew(false);
+    await loadCapsules();
+  }
+
+  function formatDate(dateStr) {
+    const d = new Date(dateStr);
+    return d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
+  }
+
+  function getDaysUntil(dateStr) {
+    const now = new Date(); now.setHours(0,0,0,0);
+    const target = new Date(dateStr); target.setHours(0,0,0,0);
+    const diff = Math.ceil((target - now) / (1000 * 60 * 60 * 24));
+    return diff;
+  }
+
+  const today = new Date().toISOString().split('T')[0];
+
+  return React.createElement('div', { className: 'modal-bg', onClick: onClose },
+    React.createElement('div', { className: 'modal', onClick: e => e.stopPropagation() },
+      React.createElement('h2', null, '💌 Капсула времени'),
+      React.createElement('p', { style: { textAlign: 'center', color: '#6a4a5a', fontSize: '14px', marginBottom: '16px' } }, 
+        'Запечатай послание, которое откроется в нужный момент 🔮'),
+      
+      !showNew && React.createElement('button', { 
+        className: 'add-btn', 
+        style: { marginBottom: '16px', animation: 'none' },
+        onClick: () => setShowNew(true) 
+      }, '✍️ Написать новое послание'),
+
+      showNew && React.createElement('form', { onSubmit: handleSave, style: { marginBottom: '16px', padding: '16px', background: '#FFF9FB', borderRadius: '12px', border: '2px solid #FFD6E4' } },
+        React.createElement('h3', { style: { color: '#E62429', marginBottom: '12px', fontSize: '16px' } }, 'Новое послание от ' + myName),
+        React.createElement('textarea', { 
+          value: message, 
+          onChange: e => setMessage(e.target.value),
+          placeholder: 'Мое любимое, в этой капсуле я хочу сказать тебе...',
+          style: { width: '100%', padding: '10px', border: '2px solid #FFD6E4', borderRadius: '10px', minHeight: '100px', marginBottom: '10px', fontFamily: 'inherit', fontSize: '14px' }
+        }),
+        React.createElement('label', { style: { display: 'block', fontSize: '14px', color: '#6a4a5a', fontWeight: '600', marginBottom: '10px' } }, 
+          'Когда вскрыть?',
+          React.createElement('input', { 
+            type: 'date', 
+            value: unlockDate,
+            min: today,
+            onChange: e => setUnlockDate(e.target.value),
+            style: { width: '100%', padding: '10px', border: '2px solid #FFD6E4', borderRadius: '10px', marginTop: '6px' }
+          })
+        ),
+        err && React.createElement('p', { className: 'error' }, err),
+        React.createElement('div', { style: { display: 'flex', gap: '8px' } },
+          React.createElement('button', { type: 'button', onClick: () => { setShowNew(false); setMessage(''); setUnlockDate(''); setErr(''); }, style: { flex: 1, padding: '10px', background: '#F5E9EE', border: 'none', borderRadius: '10px', cursor: 'pointer', fontWeight: '600' } }, 'Отмена'),
+          React.createElement('button', { type: 'submit', disabled: saving, style: { flex: 1, padding: '10px', background: 'linear-gradient(135deg, #9B5DE5, #F15BB5)', color: 'white', border: 'none', borderRadius: '10px', cursor: 'pointer', fontWeight: '600' } }, saving ? '...' : '🔒 Запечатать')
+        )
+      ),
+
+      loading ? React.createElement('p', { style: { textAlign: 'center', color: '#6a4a5a' } }, 'Загрузка...') :
+      capsules.length === 0 ? React.createElement('p', { style: { textAlign: 'center', color: '#6a4a5a', padding: '20px 0' } }, 'Пока нет капсул 📭') :
+      React.createElement('div', { className: 'dates-list' },
+        capsules.map(c => {
+          const daysLeft = getDaysUntil(c.unlock_date);
+          const isOpen = daysLeft <= 0;
+          return React.createElement('div', { key: c.id, className: 'capsule-item ' + (isOpen ? 'opened' : 'locked') },
+            React.createElement('div', { className: 'capsule-header' },
+              React.createElement('div', { className: 'capsule-date' }, isOpen ? '✨ Открыта ' + formatDate(c.unlock_date) : '🔒 Откроется ' + formatDate(c.unlock_date)),
+              React.createElement('div', { className: 'capsule-status' }, isOpen ? '📖' : '🔒')
+            ),
+            isOpen ? React.createElement('div', { className: 'capsule-message' }, '«' + c.message + '»') :
+              React.createElement('div', { className: 'capsule-lock-text' }, 
+                daysLeft === 0 ? 'Откроется сегодня!' : 'Осталось ' + daysLeft + ' дн.'
+              )
+          );
+        })
+      ),
+
+      React.createElement('div', { className: 'modal-actions' },
+        React.createElement('button', { type: 'button', onClick: onClose }, 'Закрыть')
+      )
+    )
+  );
+}
+
+// 🆕 ГАЛЕРЕЯ ВОСПОМИНАНИЙ
+function MemoriesGallery({ memories, partnerName }) {
+  if (memories.length === 0) {
+    return React.createElement('div', { className: 'column', style: { textAlign: 'center', padding: '40px 20px' } },
+      React.createElement('div', { style: { fontSize: '60px', marginBottom: '16px' } }, '📸'),
+      React.createElement('h2', { style: { justifyContent: 'center', marginBottom: '8px' } }, 'Пока нет воспоминаний'),
+      React.createElement('p', { style: { color: '#6a4a5a' } }, 'Когда вы подарите подарок с фото, он появится здесь ✨')
+    );
+  }
+
+  return React.createElement('div', null,
+    React.createElement('h2', { style: { color: '#E62429', marginBottom: '16px', fontSize: '20px' } }, '📸 Наши воспоминания'),
+    React.createElement('div', { className: 'memories-grid' },
+      memories.map(g => React.createElement('div', { key: g.id, className: 'memory-card' },
+        React.createElement('img', { src: g.image_url, alt: g.title }),
+        React.createElement('div', { className: 'memory-card-body' },
+          React.createElement('h4', null, g.title),
+          g.description && React.createElement('p', null, g.description),
+          React.createElement('div', { className: 'memory-date' }, '💝 Подарок для ' + (g.for_user_name || 'любимого человека'))
+        )
+      ))
+    )
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(App));
+
+// 🆕 Service Worker для PWA
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW registration failed:', err));
+  });
+}
+</script>
+</body>
+</html>
