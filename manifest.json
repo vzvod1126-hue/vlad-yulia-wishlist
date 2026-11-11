@@ -7,8 +7,13 @@
   "theme_color": "#FF6B9D",
   "icons": [
     {
-      "src": "https://i.postimg.cc/nsKzLvcG/e68292b7dce9918224d7a43246c4f4f6-(1).jpg",
+      "src": "https://i.postimg.cc/MH8WXhJY/IMG-20261111-122912.jpg",
       "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "https://i.postimg.cc/MH8WXhJY/IMG-20261111-122912.jpg",
+      "sizes": "512x512",
       "type": "image/jpeg"
     }
   ]
