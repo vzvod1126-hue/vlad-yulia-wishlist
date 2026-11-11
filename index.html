@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="https://i.postimg.cc/MH8WXhJY/IMG-20261111-122912.jpg">
-<title>Владик 🕷️ + Юлька Шпулька 🎀 — вишлист</title>
+<title>Владик 🕷️ + Юлька Шпулька 🎀</title>
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
@@ -72,9 +72,23 @@ header h1 { font-size: 18px; display: flex; align-items: center; gap: 8px; flex-
 .logout { padding: 8px 14px; background: white; border: 2px solid #FFD6E4; border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: 600; color: #E62429; transition: 0.2s; }
 .logout:active { transform: scale(0.9); }
 
+/* СЧЕТЧИК ВМЕСТЕ */
+.together-banner {
+  background: linear-gradient(135deg, #FF6B9D, #E62429);
+  color: white; text-align: center; padding: 12px; border-radius: 16px; margin-bottom: 20px;
+  font-size: 16px; font-weight: 700; box-shadow: 0 6px 20px rgba(230,36,41,0.3);
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  animation: pulse 3s infinite;
+}
+.together-banner span { font-size: 20px; }
+
+/* ВЕРХНЕЕ МЕНЮ (ВКЛАДКИ) */
+.tabs { display: flex; gap: 10px; margin-bottom: 20px; background: rgba(255,255,255,0.7); padding: 6px; border-radius: 16px; border: 2px solid #FFD6E4; backdrop-filter: blur(10px); }
+.tab-btn { flex: 1; padding: 12px; border: none; background: transparent; font-size: 16px; font-weight: 700; color: #8a6b7a; cursor: pointer; border-radius: 12px; transition: 0.3s; }
+.tab-btn.active { background: white; color: #E62429; box-shadow: 0 4px 15px rgba(230,36,41,0.15); }
+
 .top-panel { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
 .dates-btn { flex: 1; min-width: 150px; padding: 14px; background: rgba(255,255,255,0.9); border: 2px solid #FFD6E4; border-radius: 16px; font-size: 14px; font-weight: 700; color: #E62429; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.05); backdrop-filter: blur(5px); transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
-.gallery-btn { flex: 1; min-width: 150px; padding: 14px; background: rgba(255,255,255,0.9); border: 2px solid #FFD6E4; border-radius: 16px; font-size: 14px; font-weight: 700; color: #9B5DE5; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.05); backdrop-filter: blur(5px); transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
 .stats-box { flex: 2; min-width: 250px; background: rgba(255,255,255,0.9); padding: 10px 16px; border-radius: 16px; border: 2px solid #FFD6E4; box-shadow: 0 4px 15px rgba(0,0,0,0.05); backdrop-filter: blur(5px); display: flex; justify-content: space-around; align-items: center; }
 .stat-item { text-align: center; }
 .stat-value { font-size: 18px; font-weight: bold; color: #E62429; }
@@ -119,9 +133,26 @@ header h1 { font-size: 18px; display: flex; align-items: center; gap: 8px; flex-
 .edit-btn:active { transform: scale(0.95); background: #3A86FF; color: white; }
 .delete-btn { flex: 1; padding: 10px; background: #FFF0F5; border: 1px solid #E62429; color: #E62429; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; transition: 0.2s; }
 .delete-btn:active { transform: scale(0.95); background: #E62429; color: white; }
-
 .buy-btn { width: 100%; padding: 10px; background: #FFF0F5; border: 2px solid #FF6B9D; color: #E62429; border-radius: 10px; font-size: 14px; cursor: pointer; font-weight: 600; transition: 0.2s; }
 .buy-btn:active { transform: scale(0.95); background: #FF6B9D; color: white; }
+
+.gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px; }
+.memory-card { background: white; border-radius: 16px; padding: 8px; border: 2px solid #FFD6E4; box-shadow: 0 6px 15px rgba(255,107,157,0.1); display: flex; flex-direction: column; animation: slideInUp 0.4s ease-out forwards; opacity: 0; }
+.memory-img { width: 100%; height: 180px; object-fit: cover; border-radius: 10px; margin-bottom: 8px; }
+.memory-title { font-size: 14px; font-weight: 700; text-align: center; margin-bottom: 8px; color: #3a2836; }
+.memory-actions { display: flex; gap: 6px; margin-top: auto; }
+.memory-actions button { flex: 1; padding: 8px; font-size: 12px; border-radius: 6px; border: none; cursor: pointer; }
+.memory-edit { background: #F0F4FF; color: #3A86FF; }
+.memory-del { background: #FFF0F5; color: #E62429; }
+
+/* КНОПКА ЗАПИСОК (FAB) */
+.fab-notes { position: fixed; bottom: 24px; right: 24px; width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #FF6B9D, #E62429); color: white; font-size: 28px; border: none; box-shadow: 0 8px 25px rgba(230,36,41,0.5); cursor: pointer; z-index: 90; display: flex; align-items: center; justify-content: center; animation: pulse 2s infinite; transition: transform 0.2s; }
+.fab-notes:active { transform: scale(0.9); }
+
+/* ОКНО ЗАПИСОК */
+.note-content { text-align: center; font-size: 20px; font-weight: 600; color: #3a2836; padding: 30px 10px; line-height: 1.4; min-height: 120px; display: flex; align-items: center; justify-content: center; font-style: italic; }
+.note-add-btn { width: 100%; padding: 12px; background: #F5E9EE; color: #E62429; border: 2px dashed #FF6B9D; border-radius: 12px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+.note-add-btn:hover { background: #FFE0EC; }
 
 .modal-bg { position: fixed; inset: 0; background: rgba(58,40,54,0.6); display: flex; align-items: flex-end; justify-content: center; z-index: 100; animation: fadeIn 0.3s ease-out; backdrop-filter: blur(3px); }
 @media (min-width: 700px) { .modal-bg { align-items: center; padding: 20px; } }
@@ -145,13 +176,8 @@ header h1 { font-size: 18px; display: flex; align-items: center; gap: 8px; flex-
 .surprise-result .icon { font-size: 50px; margin-bottom: 10px; animation: popIn 0.5s; }
 .surprise-result h3 { font-size: 22px; color: #E62429; margin-bottom: 10px; }
 
-.gallery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
-.gallery-item { background: white; border: 2px solid #FFD6E4; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); display: flex; flex-direction: column; }
-.gallery-item img { width: 100%; height: 120px; object-fit: cover; }
-.gallery-item-title { padding: 8px; font-size: 12px; font-weight: bold; text-align: center; color: #3a2836; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
 @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-@keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
+@keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.03); } 100% { transform: scale(1); } }
 @keyframes popIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
 @keyframes slideInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -184,6 +210,29 @@ const COLLAGES = [
 
 const RELATIONSHIP_START = new Date('2026-08-20T00:00:00'); 
 
+function getTimeTogether() {
+  const now = new Date();
+  let years = now.getFullYear() - RELATIONSHIP_START.getFullYear();
+  let months = now.getMonth() - RELATIONSHIP_START.getMonth();
+  let days = now.getDate() - RELATIONSHIP_START.getDate();
+
+  if (days < 0) {
+    months--;
+    const prevMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+    days += prevMonth.getDate();
+  }
+  if (months < 0) {
+    years--;
+    months += 12;
+  }
+
+  let res = '';
+  if (years > 0) res += `${years} г. `;
+  if (months > 0) res += `${months} мес. `;
+  res += `${days} дн.`;
+  return res;
+}
+
 function getNextOccurrence(month, day) {
   const now = new Date();
   now.setHours(0,0,0,0);
@@ -213,10 +262,10 @@ function getAllEvents() {
       if (months % 12 === 0) {
         const years = months / 12;
         if (years === 1) label = '1 год вместе';
-        else if (years > 1 && years < 5) label = years + ' года вместе';
-        else label = years + ' лет вместе';
+        else if (years > 1 && years < 5) label = `${years} года вместе`;
+        else label = `${years} лет вместе`;
       } else {
-        label = months + ' месяцев вместе';
+        label = `${months} месяцев вместе`;
       }
       events.push({ title: label, date: targetDate, emoji: '💍' });
     }
@@ -272,16 +321,28 @@ function App() {
   const [dataLoading, setDataLoading] = useState(true);
   const [profile, setProfile] = useState(null);
   const [partner, setPartner] = useState(null);
-  const [gifts, setGifts] = useState([]);
   
+  const [activeTab, setActiveTab] = useState('wishlist');
+  
+  const [gifts, setGifts] = useState([]);
+  const [memories, setMemories] = useState([]);
+  const [notes, setNotes] = useState([]);
+
   const [showForm, setShowForm] = useState(false);
   const [editingGift, setEditingGift] = useState(null);
   const [randomGift, setRandomGift] = useState(null);
   
+  const [showMemoryForm, setShowMemoryForm] = useState(false);
+  const [editingMemory, setEditingMemory] = useState(null);
+
   const [showDates, setShowDates] = useState(false);
   const [allEvents, setAllEvents] = useState([]);
 
-  const [showGallery, setShowGallery] = useState(false);
+  // Состояния для записок
+  const [showNotesModal, setShowNotesModal] = useState(false);
+  const [currentNote, setCurrentNote] = useState(null);
+  const [isWritingNote, setIsWritingNote] = useState(false);
+  const [newNoteText, setNewNoteText] = useState('');
 
   useEffect(() => {
     db.auth.getSession().then(({ data }) => { setSession(data.session); setAppLoading(false); });
@@ -294,12 +355,19 @@ function App() {
   async function loadData() {
     setDataLoading(true);
     const me = session.user.id;
+    
     const { data: profiles } = await db.from('profiles').select('*');
     setProfile(profiles?.find(p => p.id === me) || null);
     setPartner(profiles?.find(p => p.id !== me) || null);
     
     const { data: g, error } = await db.rpc('get_gifts');
     if (!error) setGifts(g || []);
+
+    const { data: m } = await db.from('memories').select('*').order('created_at', { ascending: false });
+    setMemories(m || []);
+
+    const { data: n } = await db.from('love_notes').select('*');
+    setNotes(n || []);
 
     setAllEvents(getAllEvents());
     setDataLoading(false);
@@ -315,12 +383,18 @@ function App() {
     if (isBuying && window.confetti) {
       window.confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 }, colors: ['#FF6B9D', '#E62429', '#9B5DE5', '#FFBE0B'] });
     }
-
     await loadData();
   }
 
   async function deleteGift(giftId) {
     const { error } = await db.rpc('delete_gift', { gift_id: giftId });
+    if (error) { alert('Ошибка удаления: ' + error.message); return; }
+    await loadData();
+  }
+
+  async function deleteMemory(memId) {
+    if (!window.confirm('Удалить это воспоминание?')) return;
+    const { error } = await db.from('memories').delete().eq('id', memId);
     if (error) { alert('Ошибка удаления: ' + error.message); return; }
     await loadData();
   }
@@ -340,19 +414,38 @@ function App() {
     setRandomGift(pool[Math.floor(Math.random() * pool.length)]);
   }
 
-  function handleEditClick(gift) {
-    setEditingGift(gift);
-    setShowForm(true);
+  function handleEditGift(gift) { setEditingGift(gift); setShowForm(true); }
+  function handleCloseForm() { setShowForm(false); setEditingGift(null); }
+  function handleEditMemory(mem) { setEditingMemory(mem); setShowMemoryForm(true); }
+  function handleCloseMemoryForm() { setShowMemoryForm(false); setEditingMemory(null); }
+
+  // ЛОГИКА ЗАПИСОК
+  function openRandomNote() {
+    if (notes.length === 0) {
+      setIsWritingNote(true);
+      setShowNotesModal(true);
+      return;
+    }
+    const random = notes[Math.floor(Math.random() * notes.length)];
+    setCurrentNote(random);
+    setIsWritingNote(false);
+    setShowNotesModal(true);
   }
 
-  function handleCloseForm() {
-    setShowForm(false);
-    setEditingGift(null);
+  async function saveNote() {
+    if (!newNoteText.trim()) return;
+    const payload = { content: newNoteText.trim(), created_by: session.user.id };
+    const { error } = await db.from('love_notes').insert(payload);
+    if (error) { alert(error.message); return; }
+    
+    setNewNoteText('');
+    setIsWritingNote(false);
+    setShowNotesModal(false);
+    await loadData();
   }
 
   function getDaysLeft(dateObj) {
-    const now = new Date();
-    now.setHours(0,0,0,0);
+    const now = new Date(); now.setHours(0,0,0,0);
     const diffTime = dateObj - now;
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     if (diffDays === 0) return 'Сегодня! 🎉';
@@ -369,20 +462,20 @@ function App() {
 
   const myWishlist = gifts.filter(g => g.for_user === session.user.id);
   const partnerWishlist = gifts.filter(g => g.for_user !== session.user.id);
-  
-  const galleryGifts = gifts.filter(g => g.image_url && g.image_url.trim() !== '');
-
   const myAvatar = getAvatarUrl(profile);
   const partnerAvatar = getAvatarUrl(partner);
   const myName = formatName(profile?.name) || 'Я';
   const partnerName = formatName(partner?.name) || 'Партнёр';
-
   const totalWishes = gifts.length;
   const purchasedCount = gifts.filter(g => g.is_purchased).length;
   const totalSum = gifts.reduce((acc, curr) => acc + (curr.price || 0), 0);
 
   return React.createElement(React.Fragment, null,
     React.createElement(PolaroidBoard),
+    
+    // Плавающая кнопка записок
+    React.createElement('button', { className: 'fab-notes', onClick: openRandomNote }, '✉️'),
+
     React.createElement('div', { className: 'app' },
       React.createElement('header', null,
         React.createElement('h1', null, 
@@ -395,73 +488,124 @@ function App() {
         React.createElement('button', { className: 'logout', onClick: () => db.auth.signOut() }, 'Выйти')
       ),
 
-      React.createElement('div', { className: 'top-panel' },
-        React.createElement('button', { className: 'dates-btn', onClick: () => setShowDates(true) }, '📅 Даты'),
-        React.createElement('button', { className: 'gallery-btn', onClick: () => setShowGallery(true) }, '📸 Воспоминания'),
-        React.createElement('div', { className: 'stats-box' },
-          React.createElement('div', { className: 'stat-item' },
-            React.createElement('div', { className: 'stat-value' }, totalWishes),
-            React.createElement('div', { className: 'stat-label' }, 'Желаний')
+      // СЧЕТЧИК ВМЕСТЕ
+      React.createElement('div', { className: 'together-banner' }, 
+        React.createElement('span', null, '💖'),
+        'Мы вместе уже: ' + getTimeTogether()
+      ),
+
+      React.createElement('div', { className: 'tabs' },
+        React.createElement('button', { className: 'tab-btn ' + (activeTab === 'wishlist' ? 'active' : ''), onClick: () => setActiveTab('wishlist') }, '🎁 Вишлист'),
+        React.createElement('button', { className: 'tab-btn ' + (activeTab === 'memories' ? 'active' : ''), onClick: () => setActiveTab('memories') }, '📸 Воспоминания')
+      ),
+
+      // ВИШЛИСТ
+      activeTab === 'wishlist' && React.createElement(React.Fragment, null,
+        React.createElement('div', { className: 'top-panel' },
+          React.createElement('button', { className: 'dates-btn', onClick: () => setShowDates(true) }, '📅 Все даты'),
+          React.createElement('div', { className: 'stats-box' },
+            React.createElement('div', { className: 'stat-item' }, React.createElement('div', { className: 'stat-value' }, totalWishes), React.createElement('div', { className: 'stat-label' }, 'Желаний')),
+            React.createElement('div', { className: 'stat-item' }, React.createElement('div', { className: 'stat-value' }, purchasedCount), React.createElement('div', { className: 'stat-label' }, 'Куплено')),
+            React.createElement('div', { className: 'stat-item' }, React.createElement('div', { className: 'stat-value' }, totalSum + ' ₽'), React.createElement('div', { className: 'stat-label' }, 'Сумма'))
+          )
+        ),
+        React.createElement('div', { className: 'actions-row' },
+          React.createElement('button', { className: 'add-btn', onClick: () => { setEditingGift(null); setShowForm(true); } }, '➕ Добавить подарок'),
+          React.createElement('button', { className: 'surprise-btn', onClick: handleRandomGift }, '🎲 Подари мне сюрприз')
+        ),
+        React.createElement('section', { className: 'lists' },
+          React.createElement('div', { className: 'column' },
+            React.createElement('h2', null, '🎁 Что я хочу'),
+            myWishlist.length === 0 && React.createElement('p', { className: 'empty' }, 'Пока пусто. Добавь мечту! 💭'),
+            myWishlist.map(g => React.createElement(GiftCard, { 
+              key: g.id, gift: g, mode: 'mine', 
+              onEdit: (g.created_by === session.user.id) ? () => handleEditGift(g) : null,
+              onDelete: (g.created_by === session.user.id) ? () => deleteGift(g.id) : null 
+            }))
           ),
-          React.createElement('div', { className: 'stat-item' },
-            React.createElement('div', { className: 'stat-value' }, purchasedCount),
-            React.createElement('div', { className: 'stat-label' }, 'Куплено')
-          ),
-          React.createElement('div', { className: 'stat-item' },
-            React.createElement('div', { className: 'stat-value' }, totalSum + ' ₽'),
-            React.createElement('div', { className: 'stat-label' }, 'Сумма')
+          React.createElement('div', { className: 'column' },
+            React.createElement('h2', null, '💝 Чего хочет ' + partnerName),
+            partnerWishlist.length === 0 && React.createElement('p', { className: 'empty' }, 'Пока пусто 🎀'),
+            partnerWishlist.map(g => React.createElement(GiftCard, { 
+              key: g.id, gift: g, mode: 'partner', 
+              onToggle: () => togglePurchase(g.id), 
+              onEdit: (g.created_by === session.user.id) ? () => handleEditGift(g) : null,
+              onDelete: (g.created_by === session.user.id) ? () => deleteGift(g.id) : null 
+            }))
           )
         )
       ),
-      
-      React.createElement('div', { className: 'actions-row' },
-        React.createElement('button', { className: 'add-btn', onClick: () => { setEditingGift(null); setShowForm(true); } }, '➕ Добавить подарок'),
-        React.createElement('button', { className: 'surprise-btn', onClick: handleRandomGift }, '🎲 Подари мне сюрприз')
+
+      // ВОСПОМИНАНИЯ
+      activeTab === 'memories' && React.createElement(React.Fragment, null,
+        React.createElement('div', { className: 'actions-row' },
+          React.createElement('button', { className: 'add-btn', style: { background: 'linear-gradient(135deg, #9B5DE5, #F15BB5)', animation: 'none' }, onClick: () => { setEditingMemory(null); setShowMemoryForm(true); } }, '➕ Добавить фото')
+        ),
+        React.createElement('div', { className: 'gallery-grid' },
+          memories.length === 0 ? React.createElement('p', { className: 'empty', style: { gridColumn: '1 / -1' } }, 'Здесь пока пусто. Добавьте ваше первое совместное фото! 📸') :
+          memories.map(m => React.createElement('div', { key: m.id, className: 'memory-card' },
+            React.createElement('img', { src: m.image_url, alt: m.title, className: 'memory-img' }),
+            React.createElement('div', { className: 'memory-title' }, m.title),
+            (m.created_by === session.user.id) && React.createElement('div', { className: 'memory-actions' },
+              React.createElement('button', { className: 'memory-edit', onClick: () => handleEditMemory(m) }, '✏️'),
+              React.createElement('button', { className: 'memory-del', onClick: () => deleteMemory(m.id) }, '🗑')
+            )
+          ))
+        )
+      ),
+
+      // МОДАЛКИ
+      showNotesModal && React.createElement('div', { className: 'modal-bg', onClick: () => setShowNotesModal(false) },
+        React.createElement('div', { className: 'modal', onClick: e => e.stopPropagation() },
+          React.createElement('h2', null, isWritingNote ? 'Написать записку 💌' : 'Секретная записка 💖'),
+          
+          isWritingNote ? 
+            React.createElement(React.Fragment, null,
+              React.createElement('textarea', { 
+                value: newNoteText, 
+                onChange: e => setNewNoteText(e.target.value), 
+                placeholder: 'Напиши что-то приятное...',
+                style: { minHeight: '120px', fontSize: '16px' }
+              }),
+              React.createElement('div', { className: 'modal-actions' },
+                React.createElement('button', { type: 'button', onClick: () => setIsWritingNote(false) }, 'Назад'),
+                React.createElement('button', { type: 'button', onClick: saveNote, style: { background: 'linear-gradient(135deg, #FF6B9D, #FF8FB8)', color: 'white' } }, 'Отправить 💗')
+              )
+            )
+          :
+            React.createElement(React.Fragment, null,
+              React.createElement('div', { className: 'note-content' }, 
+                '"' + (currentNote ? currentNote.content : '') + '"'
+              ),
+              React.createElement('button', { className: 'note-add-btn', onClick: () => setIsWritingNote(true) }, '✍️ Написать свою записку'),
+              React.createElement('div', { className: 'modal-actions' },
+                React.createElement('button', { type: 'button', onClick: () => setShowNotesModal(false) }, 'Закрыть')
+              )
+            )
+        )
       ),
 
       showDates && React.createElement('div', { className: 'modal-bg', onClick: () => setShowDates(false) },
         React.createElement('div', { className: 'modal', onClick: e => e.stopPropagation() },
           React.createElement('h2', null, '📅 Важные даты'),
           React.createElement('div', { className: 'dates-list' },
-            allEvents.map((ev, idx) => 
-              React.createElement('div', { key: idx, className: 'date-item' },
-                React.createElement('div', { className: 'date-item-title' }, ev.emoji + ' ' + ev.title),
-                React.createElement('div', { className: 'date-item-days' }, getDaysLeft(ev.date))
-              )
-            )
+            allEvents.map((ev, idx) => React.createElement('div', { key: idx, className: 'date-item' },
+              React.createElement('div', { className: 'date-item-title' }, ev.emoji + ' ' + ev.title),
+              React.createElement('div', { className: 'date-item-days' }, getDaysLeft(ev.date))
+            ))
           ),
-          React.createElement('div', { className: 'modal-actions' },
-            React.createElement('button', { type: 'button', onClick: () => setShowDates(false) }, 'Закрыть')
-          )
-        )
-      ),
-
-      showGallery && React.createElement('div', { className: 'modal-bg', onClick: () => setShowGallery(false) },
-        React.createElement('div', { className: 'modal', onClick: e => e.stopPropagation() },
-          React.createElement('h2', null, '📸 Наши воспоминания'),
-          galleryGifts.length === 0 ? React.createElement('p', { className: 'empty' }, 'Пока нет фото подарков 🎁') :
-          React.createElement('div', { className: 'gallery-grid' },
-            galleryGifts.map(g => 
-              React.createElement('div', { key: g.id, className: 'gallery-item' },
-                React.createElement('img', { src: g.image_url, alt: g.title }),
-                React.createElement('div', { className: 'gallery-item-title' }, g.title)
-              )
-            )
-          ),
-          React.createElement('div', { className: 'modal-actions' },
-            React.createElement('button', { type: 'button', onClick: () => setShowGallery(false) }, 'Закрыть')
-          )
+          React.createElement('div', { className: 'modal-actions' }, React.createElement('button', { type: 'button', onClick: () => setShowDates(false) }, 'Закрыть'))
         )
       ),
 
       showForm && React.createElement(GiftForm, { 
-        me: session.user.id, 
-        partner: partner, 
-        partnerName: partnerName, 
-        initialData: editingGift,
-        onClose: handleCloseForm, 
-        onSaved: () => { handleCloseForm(); loadData(); },
-        onDelete: (id) => { deleteGift(id); handleCloseForm(); }
+        me: session.user.id, partner: partner, partnerName: partnerName, initialData: editingGift,
+        onClose: handleCloseForm, onSaved: () => { handleCloseForm(); loadData(); }, onDelete: (id) => { deleteGift(id); handleCloseForm(); }
+      }),
+
+      showMemoryForm && React.createElement(MemoryForm, {
+        me: session.user.id, initialData: editingMemory,
+        onClose: handleCloseMemoryForm, onSaved: () => { handleCloseMemoryForm(); loadData(); }
       }),
       
       randomGift && React.createElement('div', { className: 'modal-bg', onClick: () => setRandomGift(null) },
@@ -471,32 +615,9 @@ function App() {
             React.createElement('div', { className: 'icon' }, '🎉'),
             React.createElement('h3', null, randomGift.title),
             randomGift.price != null && React.createElement('p', null, 'Цена: ' + randomGift.price + ' ₽'),
-            React.createElement('p', { style: { marginTop: '10px', color: '#666' } }, 'Это отличная идея для подарка!'),
             React.createElement('button', { className: 'buy-btn', style: { marginTop: '20px' }, onClick: () => { togglePurchase(randomGift.id); setRandomGift(null); } }, '🛒 Я дарю это!')
           ),
           React.createElement('div', { className: 'modal-actions' }, React.createElement('button', { type: 'button', onClick: () => setRandomGift(null) }, 'Закрыть'))
-        )
-      ),
-
-      React.createElement('section', { className: 'lists' },
-        React.createElement('div', { className: 'column' },
-          React.createElement('h2', null, '🎁 Что я хочу'),
-          myWishlist.length === 0 && React.createElement('p', { className: 'empty' }, 'Пока пусто. Добавь мечту! 💭'),
-          myWishlist.map(g => React.createElement(GiftCard, { 
-            key: g.id, gift: g, mode: 'mine', 
-            onEdit: (g.created_by === session.user.id) ? () => handleEditClick(g) : null,
-            onDelete: (g.created_by === session.user.id) ? () => deleteGift(g.id) : null 
-          }))
-        ),
-        React.createElement('div', { className: 'column' },
-          React.createElement('h2', null, '💝 Чего хочет ' + partnerName),
-          partnerWishlist.length === 0 && React.createElement('p', { className: 'empty' }, 'Пока пусто 🎀'),
-          partnerWishlist.map(g => React.createElement(GiftCard, { 
-            key: g.id, gift: g, mode: 'partner', 
-            onToggle: () => togglePurchase(g.id), 
-            onEdit: (g.created_by === session.user.id) ? () => handleEditClick(g) : null,
-            onDelete: (g.created_by === session.user.id) ? () => deleteGift(g.id) : null 
-          }))
         )
       )
     )
@@ -542,9 +663,7 @@ function GiftCard({ gift, mode, onToggle, onEdit, onDelete }) {
       gift.priority && React.createElement('span', { className: getPrioClass(gift.priority) }, PRIORITIES[gift.priority])
     ),
     gift.url && React.createElement('a', { href: gift.url, target: '_blank', rel: 'noopener noreferrer' }, 'Открыть ссылку →'),
-    
     mode === 'partner' && onToggle && React.createElement('button', { className: 'buy-btn', onClick: onToggle }, gift.is_purchased ? '✅ Куплено (отменить?)' : '🛒 Отметить купленным'),
-    
     (onEdit || onDelete) && React.createElement('div', { className: 'card-actions' },
       onEdit && React.createElement('button', { className: 'edit-btn', onClick: onEdit }, '✏️ Изменить'),
       onDelete && React.createElement('button', { className: 'delete-btn', onClick: onDelete }, '🗑 Удалить')
@@ -553,35 +672,17 @@ function GiftCard({ gift, mode, onToggle, onEdit, onDelete }) {
 }
 
 function GiftForm({ me, partner, partnerName, initialData, onClose, onSaved, onDelete }) {
-  const [form, setForm] = useState(initialData ? {
-    title: initialData.title || '',
-    description: initialData.description || '',
-    url: initialData.url || '',
-    price: initialData.price || '',
-    category: initialData.category || '',
-    priority: initialData.priority || '',
-    for_user: initialData.for_user || me,
-    image_url: initialData.image_url || ''
-  } : { title: '', description: '', url: '', price: '', category: '', priority: '', for_user: me, image_url: '' });
-  
+  const [form, setForm] = useState(initialData ? { ...initialData, image_url: initialData.image_url || '' } : { title: '', description: '', url: '', price: '', category: '', priority: '', for_user: me, image_url: '' });
   const [busy, setBusy] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [err, setErr] = useState('');
 
   async function handleFileChange(e) {
-    const file = e.target.files[0];
-    if (!file) return;
+    const file = e.target.files[0]; if (!file) return;
     setUploading(true);
-    const fileExt = file.name.split('.').pop();
-    const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
-    
-    const { error: uploadError } = await db.storage.from('gift-photos').upload(fileName, file);
-    if (uploadError) {
-      alert('Ошибка загрузки фото: ' + uploadError.message);
-      setUploading(false);
-      return;
-    }
-    
+    const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${file.name.split('.').pop()}`;
+    const { error } = await db.storage.from('gift-photos').upload(fileName, file);
+    if (error) { alert('Ошибка загрузки: ' + error.message); setUploading(false); return; }
     const { data } = db.storage.from('gift-photos').getPublicUrl(fileName);
     setForm({ ...form, image_url: data.publicUrl });
     setUploading(false);
@@ -594,17 +695,13 @@ function GiftForm({ me, partner, partnerName, initialData, onClose, onSaved, onD
       price: form.price ? Number(form.price) : null, category: form.category || null,
       priority: form.priority || null, for_user: form.for_user, image_url: form.image_url || null
     };
-
     let error;
     if (initialData) {
-      const res = await db.from('gifts').update(payload).eq('id', initialData.id).select();
-      error = res.error;
+      error = (await db.from('gifts').update(payload).eq('id', initialData.id).select()).error;
     } else {
       payload.created_by = me;
-      const res = await db.from('gifts').insert(payload).select();
-      error = res.error;
+      error = (await db.from('gifts').insert(payload).select()).error;
     }
-
     setBusy(false);
     if (error) { setErr(error.message); return; }
     onSaved();
@@ -612,46 +709,83 @@ function GiftForm({ me, partner, partnerName, initialData, onClose, onSaved, onD
 
   return React.createElement('div', { className: 'modal-bg', onClick: onClose },
     React.createElement('form', { className: 'modal', onClick: e => e.stopPropagation(), onSubmit: handleSubmit },
-      React.createElement('h2', null, initialData ? 'Редактировать подарок ✏️' : 'Новый подарок 🎁'),
-      React.createElement('label', null, 'Кому?',
-        React.createElement('select', { value: form.for_user, onChange: e => setForm({...form, for_user: e.target.value}) },
-          React.createElement('option', { value: me }, 'Мне (в мой вишлист)'),
-          partner && React.createElement('option', { value: partner.id }, partner.emoji + ' ' + partnerName)
-        )
-      ),
+      React.createElement('h2', null, initialData ? 'Редактировать ✏️' : 'Новый подарок 🎁'),
+      React.createElement('label', null, 'Кому?', React.createElement('select', { value: form.for_user, onChange: e => setForm({...form, for_user: e.target.value}) },
+        React.createElement('option', { value: me }, 'Мне'), partner && React.createElement('option', { value: partner.id }, partnerName)
+      )),
       React.createElement('label', null, 'Название*', React.createElement('input', { required: true, value: form.title, onChange: e => setForm({...form, title: e.target.value}) })),
       React.createElement('label', null, 'Описание', React.createElement('textarea', { value: form.description, onChange: e => setForm({...form, description: e.target.value}) })),
-      React.createElement('label', null, 'Ссылка на товар', React.createElement('input', { type: 'url', value: form.url, onChange: e => setForm({...form, url: e.target.value}), placeholder: 'https://...' })),
+      React.createElement('label', null, 'Ссылка', React.createElement('input', { type: 'url', value: form.url, onChange: e => setForm({...form, url: e.target.value}) })),
       React.createElement('label', null, 'Цена, ₽', React.createElement('input', { type: 'number', value: form.price, onChange: e => setForm({...form, price: e.target.value}) })),
-      
-      React.createElement('label', null, 'Фото подарка или момента',
+      React.createElement('label', null, 'Фото',
         React.createElement('input', { type: 'file', accept: 'image/*', onChange: handleFileChange, disabled: uploading }),
-        uploading && React.createElement('span', { style: { fontSize: '12px', color: '#E62429' } }, 'Загрузка...'),
-        form.image_url && React.createElement('img', { src: form.image_url, alt: 'preview', style: { width: '80px', height: '80px', objectFit: 'cover', borderRadius: '8px', marginTop: '8px', border: '2px solid #FFD6E4' } })
+        uploading && React.createElement('span', { style: { fontSize: 12, color: '#E62429' } }, 'Загрузка...'),
+        form.image_url && React.createElement('img', { src: form.image_url, style: { width: 60, height: 60, objectFit: 'cover', borderRadius: 8, marginTop: 8 } })
       ),
+      React.createElement('label', null, 'Категория', React.createElement('select', { value: form.category, onChange: e => setForm({...form, category: e.target.value}) },
+        React.createElement('option', { value: '' }, '—'), Object.entries(CATEGORIES).map(([k,v]) => React.createElement('option', { key: k, value: k }, v))
+      )),
+      React.createElement('label', null, 'Приоритет', React.createElement('select', { value: form.priority, onChange: e => setForm({...form, priority: e.target.value}) },
+        React.createElement('option', { value: '' }, '—'), Object.entries(PRIORITIES).map(([k,v]) => React.createElement('option', { key: k, value: k }, v))
+      )),
+      err && React.createElement('p', { className: 'error' }, err),
+      React.createElement('div', { className: 'modal-actions' },
+        React.createElement('button', { type: 'button', onClick: onClose }, 'Отмена'),
+        React.createElement('button', { type: 'submit', disabled: busy || uploading }, busy ? '...' : 'Сохранить')
+      ),
+      initialData && React.createElement('button', { type: 'button', onClick: () => { if(window.confirm('Удалить?')) onDelete(initialData.id); }, style: { marginTop: 16, width: '100%', background: 'none', border: 'none', color: '#E62429', cursor: 'pointer' } }, '🗑 Удалить')
+    )
+  );
+}
 
-      React.createElement('label', null, 'Категория',
-        React.createElement('select', { value: form.category, onChange: e => setForm({...form, category: e.target.value}) },
-          React.createElement('option', { value: '' }, '— Выбери —'),
-          Object.entries(CATEGORIES).map(([k,v]) => React.createElement('option', { key: k, value: k }, v))
-        )
-      ),
-      React.createElement('label', null, 'Приоритет',
-        React.createElement('select', { value: form.priority, onChange: e => setForm({...form, priority: e.target.value}) },
-          React.createElement('option', { value: '' }, '— Выбери —'),
-          Object.entries(PRIORITIES).map(([k,v]) => React.createElement('option', { key: k, value: k }, v))
-        )
+function MemoryForm({ me, initialData, onClose, onSaved }) {
+  const [form, setForm] = useState(initialData ? { title: initialData.title, image_url: initialData.image_url } : { title: '', image_url: '' });
+  const [busy, setBusy] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [err, setErr] = useState('');
+
+  async function handleFileChange(e) {
+    const file = e.target.files[0]; if (!file) return;
+    setUploading(true);
+    const fileName = `mem-${Date.now()}-${Math.random().toString(36).substring(7)}.${file.name.split('.').pop()}`;
+    const { error } = await db.storage.from('gift-photos').upload(fileName, file);
+    if (error) { alert('Ошибка загрузки: ' + error.message); setUploading(false); return; }
+    const { data } = db.storage.from('gift-photos').getPublicUrl(fileName);
+    setForm({ ...form, image_url: data.publicUrl });
+    setUploading(false);
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault(); setBusy(true); setErr('');
+    if (!form.image_url) { setErr('Сначала загрузите фото!'); setBusy(false); return; }
+
+    const payload = { title: form.title, image_url: form.image_url };
+    let error;
+    if (initialData) {
+      error = (await db.from('memories').update(payload).eq('id', initialData.id)).error;
+    } else {
+      payload.created_by = me;
+      error = (await db.from('memories').insert(payload)).error;
+    }
+    setBusy(false);
+    if (error) { setErr(error.message); return; }
+    onSaved();
+  }
+
+  return React.createElement('div', { className: 'modal-bg', onClick: onClose },
+    React.createElement('form', { className: 'modal', onClick: e => e.stopPropagation(), onSubmit: handleSubmit },
+      React.createElement('h2', null, initialData ? 'Редактировать фото ✏️' : 'Новое воспоминание 📸'),
+      React.createElement('label', null, 'Название*', React.createElement('input', { required: true, value: form.title, onChange: e => setForm({...form, title: e.target.value}), placeholder: 'Например: Наша первая поездка' })),
+      React.createElement('label', null, 'Фото*',
+        React.createElement('input', { type: 'file', accept: 'image/*', onChange: handleFileChange, disabled: uploading }),
+        uploading && React.createElement('span', { style: { fontSize: 12, color: '#E62429' } }, 'Загрузка...'),
+        form.image_url && React.createElement('img', { src: form.image_url, style: { width: '100%', maxHeight: 200, objectFit: 'cover', borderRadius: 12, marginTop: 8 } })
       ),
       err && React.createElement('p', { className: 'error' }, err),
       React.createElement('div', { className: 'modal-actions' },
         React.createElement('button', { type: 'button', onClick: onClose }, 'Отмена'),
-        React.createElement('button', { type: 'submit', disabled: busy || uploading }, busy ? '...' : 'Сохранить 💗')
-      ),
-      initialData && React.createElement('button', { 
-        type: 'button', 
-        onClick: () => { if(window.confirm('Точно удалить?')) onDelete(initialData.id); },
-        style: { marginTop: '16px', width: '100%', background: 'none', border: 'none', color: '#E62429', textDecoration: 'underline', cursor: 'pointer', fontSize: '14px' }
-      }, '🗑 Удалить этот подарок')
+        React.createElement('button', { type: 'submit', disabled: busy || uploading }, busy ? '...' : 'Сохранить')
+      )
     )
   );
 }
