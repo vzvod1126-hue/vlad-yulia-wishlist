@@ -3,6 +3,10 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#FF6B9D"/>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.json">
 <title>Владик 🕷️ + Юлька Шпулька 🎀 — вишлист</title>
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
@@ -68,8 +72,8 @@ header h1 { font-size: 18px; display: flex; align-items: center; gap: 8px; flex-
 .logout:active { transform: scale(0.9); }
 
 .top-panel { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-.dates-btn { flex: 1; min-width: 200px; padding: 14px; background: rgba(255,255,255,0.9); border: 2px solid #FFD6E4; border-radius: 16px; font-size: 16px; font-weight: 700; color: #E62429; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.05); backdrop-filter: blur(5px); transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
-.dates-btn:active { transform: scale(0.95); }
+.dates-btn { flex: 1; min-width: 150px; padding: 14px; background: rgba(255,255,255,0.9); border: 2px solid #FFD6E4; border-radius: 16px; font-size: 14px; font-weight: 700; color: #E62429; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.05); backdrop-filter: blur(5px); transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.gallery-btn { flex: 1; min-width: 150px; padding: 14px; background: rgba(255,255,255,0.9); border: 2px solid #FFD6E4; border-radius: 16px; font-size: 14px; font-weight: 700; color: #9B5DE5; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.05); backdrop-filter: blur(5px); transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
 .stats-box { flex: 2; min-width: 250px; background: rgba(255,255,255,0.9); padding: 10px 16px; border-radius: 16px; border: 2px solid #FFD6E4; box-shadow: 0 4px 15px rgba(0,0,0,0.05); backdrop-filter: blur(5px); display: flex; justify-content: space-around; align-items: center; }
 .stat-item { text-align: center; }
 .stat-value { font-size: 18px; font-weight: bold; color: #E62429; }
@@ -140,6 +144,12 @@ header h1 { font-size: 18px; display: flex; align-items: center; gap: 8px; flex-
 .surprise-result .icon { font-size: 50px; margin-bottom: 10px; animation: popIn 0.5s; }
 .surprise-result h3 { font-size: 22px; color: #E62429; margin-bottom: 10px; }
 
+/* Галерея */
+.gallery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
+.gallery-item { background: white; border: 2px solid #FFD6E4; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); display: flex; flex-direction: column; }
+.gallery-item img { width: 100%; height: 120px; object-fit: cover; }
+.gallery-item-title { padding: 8px; font-size: 12px; font-weight: bold; text-align: center; color: #3a2836; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
 @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
 @keyframes popIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
@@ -174,15 +184,12 @@ const COLLAGES = [
 
 const RELATIONSHIP_START = new Date('2026-08-20T00:00:00'); 
 
-// Получаем следующую дату для ежегодных праздников
 function getNextOccurrence(month, day) {
   const now = new Date();
   now.setHours(0,0,0,0);
   let year = now.getFullYear();
   let target = new Date(year, month - 1, day);
-  if (target < now) {
-    target = new Date(year + 1, month - 1, day);
-  }
+  if (target < now) target = new Date(year + 1, month - 1, day);
   return target;
 }
 
@@ -191,21 +198,16 @@ function getAllEvents() {
   const now = new Date();
   now.setHours(0,0,0,0);
 
-  // 1. Ежегодные праздники
   events.push({ title: 'Новый год', date: getNextOccurrence(1, 1), emoji: '🎄' });
   events.push({ title: '14 февраля', date: getNextOccurrence(2, 14), emoji: '💝' });
   events.push({ title: '23 февраля', date: getNextOccurrence(2, 23), emoji: '🎖️' });
   events.push({ title: '8 марта', date: getNextOccurrence(3, 8), emoji: '🌷' });
-  
-  // 2. Дни рождения
   events.push({ title: 'День рождения Юльки', date: getNextOccurrence(7, 29), emoji: '🎀' });
   events.push({ title: 'День рождения Владика', date: getNextOccurrence(8, 16), emoji: '🕷️' });
 
-  // 3. Годовщины
   for (let i = 1; i <= 10; i++) {
     const months = i * 6;
     const targetDate = new Date(RELATIONSHIP_START.getFullYear(), RELATIONSHIP_START.getMonth() + months, RELATIONSHIP_START.getDate());
-    
     if (targetDate > now) {
       let label = '';
       if (months % 12 === 0) {
@@ -219,8 +221,6 @@ function getAllEvents() {
       events.push({ title: label, date: targetDate, emoji: '💍' });
     }
   }
-
-  // Сортируем по дате
   return events.sort((a, b) => a.date - b.date);
 }
 
@@ -281,6 +281,8 @@ function App() {
   const [showDates, setShowDates] = useState(false);
   const [allEvents, setAllEvents] = useState([]);
 
+  const [showGallery, setShowGallery] = useState(false);
+
   useEffect(() => {
     db.auth.getSession().then(({ data }) => { setSession(data.session); setAppLoading(false); });
     const { data: sub } = db.auth.onAuthStateChange((_e, s) => setSession(s));
@@ -299,7 +301,6 @@ function App() {
     const { data: g, error } = await db.rpc('get_gifts');
     if (!error) setGifts(g || []);
 
-    // Загружаем все даты (праздники + годовщины)
     setAllEvents(getAllEvents());
     setDataLoading(false);
   }
@@ -368,6 +369,9 @@ function App() {
 
   const myWishlist = gifts.filter(g => g.for_user === session.user.id);
   const partnerWishlist = gifts.filter(g => g.for_user !== session.user.id);
+  
+  // Фильтруем подарки для галереи (только те, у которых есть фото)
+  const galleryGifts = gifts.filter(g => g.image_url && g.image_url.trim() !== '');
 
   const myAvatar = getAvatarUrl(profile);
   const partnerAvatar = getAvatarUrl(partner);
@@ -393,7 +397,8 @@ function App() {
       ),
 
       React.createElement('div', { className: 'top-panel' },
-        React.createElement('button', { className: 'dates-btn', onClick: () => setShowDates(true) }, '📅 Все важные даты'),
+        React.createElement('button', { className: 'dates-btn', onClick: () => setShowDates(true) }, '📅 Даты'),
+        React.createElement('button', { className: 'gallery-btn', onClick: () => setShowGallery(true) }, '📸 Воспоминания'),
         React.createElement('div', { className: 'stats-box' },
           React.createElement('div', { className: 'stat-item' },
             React.createElement('div', { className: 'stat-value' }, totalWishes),
@@ -428,6 +433,24 @@ function App() {
           ),
           React.createElement('div', { className: 'modal-actions' },
             React.createElement('button', { type: 'button', onClick: () => setShowDates(false) }, 'Закрыть')
+          )
+        )
+      ),
+
+      showGallery && React.createElement('div', { className: 'modal-bg', onClick: () => setShowGallery(false) },
+        React.createElement('div', { className: 'modal', onClick: e => e.stopPropagation() },
+          React.createElement('h2', null, '📸 Наши воспоминания'),
+          galleryGifts.length === 0 ? React.createElement('p', { className: 'empty' }, 'Пока нет фото подарков 🎁') :
+          React.createElement('div', { className: 'gallery-grid' },
+            galleryGifts.map(g => 
+              React.createElement('div', { key: g.id, className: 'gallery-item' },
+                React.createElement('img', { src: g.image_url, alt: g.title }),
+                React.createElement('div', { className: 'gallery-item-title' }, g.title)
+              )
+            )
+          ),
+          React.createElement('div', { className: 'modal-actions' },
+            React.createElement('button', { type: 'button', onClick: () => setShowGallery(false) }, 'Закрыть')
           )
         )
       ),
@@ -538,18 +561,39 @@ function GiftForm({ me, partner, partnerName, initialData, onClose, onSaved, onD
     price: initialData.price || '',
     category: initialData.category || '',
     priority: initialData.priority || '',
-    for_user: initialData.for_user || me
-  } : { title: '', description: '', url: '', price: '', category: '', priority: '', for_user: me });
+    for_user: initialData.for_user || me,
+    image_url: initialData.image_url || ''
+  } : { title: '', description: '', url: '', price: '', category: '', priority: '', for_user: me, image_url: '' });
   
   const [busy, setBusy] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [err, setErr] = useState('');
+
+  async function handleFileChange(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    setUploading(true);
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+    
+    const { error: uploadError } = await db.storage.from('gift-photos').upload(fileName, file);
+    if (uploadError) {
+      alert('Ошибка загрузки фото: ' + uploadError.message);
+      setUploading(false);
+      return;
+    }
+    
+    const { data } = db.storage.from('gift-photos').getPublicUrl(fileName);
+    setForm({ ...form, image_url: data.publicUrl });
+    setUploading(false);
+  }
 
   async function handleSubmit(e) {
     e.preventDefault(); setBusy(true); setErr('');
     const payload = {
       title: form.title, description: form.description || null, url: form.url || null,
       price: form.price ? Number(form.price) : null, category: form.category || null,
-      priority: form.priority || null, for_user: form.for_user
+      priority: form.priority || null, for_user: form.for_user, image_url: form.image_url || null
     };
 
     let error;
@@ -580,6 +624,13 @@ function GiftForm({ me, partner, partnerName, initialData, onClose, onSaved, onD
       React.createElement('label', null, 'Описание', React.createElement('textarea', { value: form.description, onChange: e => setForm({...form, description: e.target.value}) })),
       React.createElement('label', null, 'Ссылка на товар', React.createElement('input', { type: 'url', value: form.url, onChange: e => setForm({...form, url: e.target.value}), placeholder: 'https://...' })),
       React.createElement('label', null, 'Цена, ₽', React.createElement('input', { type: 'number', value: form.price, onChange: e => setForm({...form, price: e.target.value}) })),
+      
+      React.createElement('label', null, 'Фото подарка или момента',
+        React.createElement('input', { type: 'file', accept: 'image/*', onChange: handleFileChange, disabled: uploading }),
+        uploading && React.createElement('span', { style: { fontSize: '12px', color: '#E62429' } }, 'Загрузка...'),
+        form.image_url && React.createElement('img', { src: form.image_url, alt: 'preview', style: { width: '80px', height: '80px', objectFit: 'cover', borderRadius: '8px', marginTop: '8px', border: '2px solid #FFD6E4' } })
+      ),
+
       React.createElement('label', null, 'Категория',
         React.createElement('select', { value: form.category, onChange: e => setForm({...form, category: e.target.value}) },
           React.createElement('option', { value: '' }, '— Выбери —'),
@@ -595,7 +646,7 @@ function GiftForm({ me, partner, partnerName, initialData, onClose, onSaved, onD
       err && React.createElement('p', { className: 'error' }, err),
       React.createElement('div', { className: 'modal-actions' },
         React.createElement('button', { type: 'button', onClick: onClose }, 'Отмена'),
-        React.createElement('button', { type: 'submit', disabled: busy }, busy ? '...' : 'Сохранить 💗')
+        React.createElement('button', { type: 'submit', disabled: busy || uploading }, busy ? '...' : 'Сохранить 💗')
       ),
       initialData && React.createElement('button', { 
         type: 'button', 
