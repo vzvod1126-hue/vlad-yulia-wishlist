@@ -1,0 +1,15 @@
+{
+  "name": "Владик + Юлька Шпулька",
+  "short_name": "Вишлист",
+  "start_url": "/vlad-yulia-wishlist/",
+  "display": "standalone",
+  "background_color": "#FFF5F8",
+  "theme_color": "#FF6B9D",
+  "icons": [
+    {
+      "src": "https://i.postimg.cc/nsKzLvcG/e68292b7dce9918224d7a43246c4f4f6-(1).jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    }
+  ]
+}
