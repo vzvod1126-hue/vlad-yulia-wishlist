@@ -72,17 +72,9 @@ header h1 { font-size: 18px; display: flex; align-items: center; gap: 8px; flex-
 .logout { padding: 8px 14px; background: white; border: 2px solid #FFD6E4; border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: 600; color: #E62429; transition: 0.2s; }
 .logout:active { transform: scale(0.9); }
 
-/* СЧЕТЧИК ВМЕСТЕ */
-.together-banner {
-  background: linear-gradient(135deg, #FF6B9D, #E62429);
-  color: white; text-align: center; padding: 12px; border-radius: 16px; margin-bottom: 20px;
-  font-size: 16px; font-weight: 700; box-shadow: 0 6px 20px rgba(230,36,41,0.3);
-  display: flex; align-items: center; justify-content: center; gap: 8px;
-  animation: pulse 3s infinite;
-}
+.together-banner { background: linear-gradient(135deg, #FF6B9D, #E62429); color: white; text-align: center; padding: 12px; border-radius: 16px; margin-bottom: 20px; font-size: 16px; font-weight: 700; box-shadow: 0 6px 20px rgba(230,36,41,0.3); display: flex; align-items: center; justify-content: center; gap: 8px; animation: pulse 3s infinite; }
 .together-banner span { font-size: 20px; }
 
-/* ВЕРХНЕЕ МЕНЮ (ВКЛАДКИ) */
 .tabs { display: flex; gap: 10px; margin-bottom: 20px; background: rgba(255,255,255,0.7); padding: 6px; border-radius: 16px; border: 2px solid #FFD6E4; backdrop-filter: blur(10px); }
 .tab-btn { flex: 1; padding: 12px; border: none; background: transparent; font-size: 16px; font-weight: 700; color: #8a6b7a; cursor: pointer; border-radius: 12px; transition: 0.3s; }
 .tab-btn.active { background: white; color: #E62429; box-shadow: 0 4px 15px rgba(230,36,41,0.15); }
@@ -113,17 +105,31 @@ header h1 { font-size: 18px; display: flex; align-items: center; gap: 8px; flex-
 .card.purchased { opacity: 0.6; border-style: dashed; background: #FFF9FB; }
 .card.purchased h3 { text-decoration: line-through; }
 
+/* НОВЫЕ БЕЙДЖИ */
 .meta { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
 .badge { font-size: 12px; padding: 4px 10px; border-radius: 20px; font-weight: 600; color: white; display: inline-block; }
 .badge.price { background: #8A6B7A; }
+
+/* Категории */
 .badge.cat-under2000 { background: #FF9F1C; }
 .badge.cat-big { background: #E62429; }
-.badge.cat-handmade { background: #2EC4B6; }
-.badge.cat-experience { background: #9B5DE5; }
+.badge.cat-handmade { background: #E76F51; }
+.badge.cat-experience { background: #06D6A0; }
 .badge.cat-other { background: #6C757D; }
+.badge.cat-tech { background: #3A86FF; }
+.badge.cat-clothes { background: #F15BB5; }
+.badge.cat-beauty { background: #FF7A00; }
+.badge.cat-home { background: #2EC4B6; }
+.badge.cat-hobby { background: #9B5DE5; }
+.badge.cat-food { background: #FFBE0B; color: #3a2836; }
+
+/* Уровни желаемости */
+.badge.prio-urgent { background: #D00000; box-shadow: 0 0 10px rgba(208,0,0,0.5); }
 .badge.prio-must { background: #FF006E; box-shadow: 0 0 10px rgba(255,0,110,0.5); }
+.badge.prio-want { background: #FF6B9D; }
 .badge.prio-nice { background: #3A86FF; }
-.badge.prio-dream { background: #FFBE0B; color: #3a2836; }
+.badge.prio-dream { background: #FFBE0B; color: #3a2836; box-shadow: 0 0 10px rgba(255,190,11,0.5); }
+.badge.prio-maybe { background: #6C757D; }
 
 .card a { color: #E62429; font-size: 13px; text-decoration: none; font-weight: bold; display: inline-block; margin-bottom: 10px; }
 .card a:hover { text-decoration: underline; }
@@ -145,11 +151,9 @@ header h1 { font-size: 18px; display: flex; align-items: center; gap: 8px; flex-
 .memory-edit { background: #F0F4FF; color: #3A86FF; }
 .memory-del { background: #FFF0F5; color: #E62429; }
 
-/* КНОПКА ЗАПИСОК (FAB) */
 .fab-notes { position: fixed; bottom: 24px; right: 24px; width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #FF6B9D, #E62429); color: white; font-size: 28px; border: none; box-shadow: 0 8px 25px rgba(230,36,41,0.5); cursor: pointer; z-index: 90; display: flex; align-items: center; justify-content: center; animation: pulse 2s infinite; transition: transform 0.2s; }
 .fab-notes:active { transform: scale(0.9); }
 
-/* ОКНО ЗАПИСОК */
 .note-content { text-align: center; font-size: 20px; font-weight: 600; color: #3a2836; padding: 30px 10px; line-height: 1.4; min-height: 120px; display: flex; align-items: center; justify-content: center; font-style: italic; }
 .note-add-btn { width: 100%; padding: 12px; background: #F5E9EE; color: #E62429; border: 2px dashed #FF6B9D; border-radius: 12px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 10px; }
 .note-add-btn:hover { background: #FFE0EC; }
@@ -195,8 +199,31 @@ const SUPABASE_URL = 'https://ufxkmdyqggtzehdgrlrq.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_qztayszdGjUWfJ3vdJiNLA_7yLft1vo';
 
 const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-const CATEGORIES = { under2000: '💰 до 2000', big: '💎 крупный', handmade: '🎨 handmade', experience: '✨ впечатление', other: '🎁 прочее' };
-const PRIORITIES = { must: '🔥 очень хочу', nice: '🙂 было бы славно', dream: '🌟 мечта' };
+
+// НОВЫЕ КАТЕГОРИИ
+const CATEGORIES = { 
+  under2000: '💰 до 2000', 
+  big: '💎 крупный', 
+  handmade: '🧶 своими руками', 
+  experience: '✨ впечатление', 
+  tech: '📱 техника', 
+  clothes: '👕 одежда', 
+  beauty: '💄 красота', 
+  home: '🏠 для дома', 
+  hobby: '🎨 хобби', 
+  food: '🍫 вкусняшки', 
+  other: '🎁 прочее' 
+};
+
+// НОВЫЕ УРОВНИ ЖЕЛАЕМОСТИ
+const PRIORITIES = { 
+  urgent: '🚨 очень нужно', 
+  must: '🔥 очень хочу', 
+  want: '💖 хочу', 
+  nice: '🙂 было бы славно', 
+  dream: '🌟 мечта', 
+  maybe: '🤔 может быть' 
+};
 
 const SPIDER_AVATAR = 'https://i.postimg.cc/nsKzLvcG/e68292b7dce9918224d7a43246c4f4f6-(1).jpg';
 const KITTY_AVATAR = 'https://i.postimg.cc/94H0VxVg/04c2467f385af626b7edd1c408596c26.jpg';
@@ -338,7 +365,6 @@ function App() {
   const [showDates, setShowDates] = useState(false);
   const [allEvents, setAllEvents] = useState([]);
 
-  // Состояния для записок
   const [showNotesModal, setShowNotesModal] = useState(false);
   const [currentNote, setCurrentNote] = useState(null);
   const [isWritingNote, setIsWritingNote] = useState(false);
@@ -409,7 +435,7 @@ function App() {
   function handleRandomGift() {
     const available = gifts.filter(g => g.for_user !== session.user.id && !g.is_purchased);
     if (available.length === 0) { alert('В списке партнёра пока нет некупленных подарков!'); return; }
-    const mustHaves = available.filter(g => g.priority === 'must');
+    const mustHaves = available.filter(g => ['urgent', 'must'].includes(g.priority));
     const pool = mustHaves.length > 0 ? mustHaves : available;
     setRandomGift(pool[Math.floor(Math.random() * pool.length)]);
   }
@@ -419,7 +445,6 @@ function App() {
   function handleEditMemory(mem) { setEditingMemory(mem); setShowMemoryForm(true); }
   function handleCloseMemoryForm() { setShowMemoryForm(false); setEditingMemory(null); }
 
-  // ЛОГИКА ЗАПИСОК
   function openRandomNote() {
     if (notes.length === 0) {
       setIsWritingNote(true);
@@ -473,7 +498,6 @@ function App() {
   return React.createElement(React.Fragment, null,
     React.createElement(PolaroidBoard),
     
-    // Плавающая кнопка записок
     React.createElement('button', { className: 'fab-notes', onClick: openRandomNote }, '✉️'),
 
     React.createElement('div', { className: 'app' },
@@ -488,7 +512,6 @@ function App() {
         React.createElement('button', { className: 'logout', onClick: () => db.auth.signOut() }, 'Выйти')
       ),
 
-      // СЧЕТЧИК ВМЕСТЕ
       React.createElement('div', { className: 'together-banner' }, 
         React.createElement('span', null, '💖'),
         'Мы вместе уже: ' + getTimeTogether()
@@ -499,7 +522,6 @@ function App() {
         React.createElement('button', { className: 'tab-btn ' + (activeTab === 'memories' ? 'active' : ''), onClick: () => setActiveTab('memories') }, '📸 Воспоминания')
       ),
 
-      // ВИШЛИСТ
       activeTab === 'wishlist' && React.createElement(React.Fragment, null,
         React.createElement('div', { className: 'top-panel' },
           React.createElement('button', { className: 'dates-btn', onClick: () => setShowDates(true) }, '📅 Все даты'),
@@ -536,7 +558,6 @@ function App() {
         )
       ),
 
-      // ВОСПОМИНАНИЯ
       activeTab === 'memories' && React.createElement(React.Fragment, null,
         React.createElement('div', { className: 'actions-row' },
           React.createElement('button', { className: 'add-btn', style: { background: 'linear-gradient(135deg, #9B5DE5, #F15BB5)', animation: 'none' }, onClick: () => { setEditingMemory(null); setShowMemoryForm(true); } }, '➕ Добавить фото')
@@ -554,19 +575,12 @@ function App() {
         )
       ),
 
-      // МОДАЛКИ
       showNotesModal && React.createElement('div', { className: 'modal-bg', onClick: () => setShowNotesModal(false) },
         React.createElement('div', { className: 'modal', onClick: e => e.stopPropagation() },
           React.createElement('h2', null, isWritingNote ? 'Написать записку 💌' : 'Секретная записка 💖'),
-          
           isWritingNote ? 
             React.createElement(React.Fragment, null,
-              React.createElement('textarea', { 
-                value: newNoteText, 
-                onChange: e => setNewNoteText(e.target.value), 
-                placeholder: 'Напиши что-то приятное...',
-                style: { minHeight: '120px', fontSize: '16px' }
-              }),
+              React.createElement('textarea', { value: newNoteText, onChange: e => setNewNoteText(e.target.value), placeholder: 'Напиши что-то приятное...', style: { minHeight: '120px', fontSize: '16px' } }),
               React.createElement('div', { className: 'modal-actions' },
                 React.createElement('button', { type: 'button', onClick: () => setIsWritingNote(false) }, 'Назад'),
                 React.createElement('button', { type: 'button', onClick: saveNote, style: { background: 'linear-gradient(135deg, #FF6B9D, #FF8FB8)', color: 'white' } }, 'Отправить 💗')
@@ -574,13 +588,9 @@ function App() {
             )
           :
             React.createElement(React.Fragment, null,
-              React.createElement('div', { className: 'note-content' }, 
-                '"' + (currentNote ? currentNote.content : '') + '"'
-              ),
+              React.createElement('div', { className: 'note-content' }, '"' + (currentNote ? currentNote.content : '') + '"'),
               React.createElement('button', { className: 'note-add-btn', onClick: () => setIsWritingNote(true) }, '✍️ Написать свою записку'),
-              React.createElement('div', { className: 'modal-actions' },
-                React.createElement('button', { type: 'button', onClick: () => setShowNotesModal(false) }, 'Закрыть')
-              )
+              React.createElement('div', { className: 'modal-actions' }, React.createElement('button', { type: 'button', onClick: () => setShowNotesModal(false) }, 'Закрыть'))
             )
         )
       ),
@@ -723,10 +733,12 @@ function GiftForm({ me, partner, partnerName, initialData, onClose, onSaved, onD
         form.image_url && React.createElement('img', { src: form.image_url, style: { width: 60, height: 60, objectFit: 'cover', borderRadius: 8, marginTop: 8 } })
       ),
       React.createElement('label', null, 'Категория', React.createElement('select', { value: form.category, onChange: e => setForm({...form, category: e.target.value}) },
-        React.createElement('option', { value: '' }, '—'), Object.entries(CATEGORIES).map(([k,v]) => React.createElement('option', { key: k, value: k }, v))
+        React.createElement('option', { value: '' }, '— Выбери —'), 
+        Object.entries(CATEGORIES).map(([k,v]) => React.createElement('option', { key: k, value: k }, v))
       )),
-      React.createElement('label', null, 'Приоритет', React.createElement('select', { value: form.priority, onChange: e => setForm({...form, priority: e.target.value}) },
-        React.createElement('option', { value: '' }, '—'), Object.entries(PRIORITIES).map(([k,v]) => React.createElement('option', { key: k, value: k }, v))
+      React.createElement('label', null, 'Уровень желания', React.createElement('select', { value: form.priority, onChange: e => setForm({...form, priority: e.target.value}) },
+        React.createElement('option', { value: '' }, '— Выбери —'), 
+        Object.entries(PRIORITIES).map(([k,v]) => React.createElement('option', { key: k, value: k }, v))
       )),
       err && React.createElement('p', { className: 'error' }, err),
       React.createElement('div', { className: 'modal-actions' },
